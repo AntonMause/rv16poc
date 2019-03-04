@@ -20,5 +20,4 @@ The current snapshot is intended to use Libero SoC version 12.0 (2019q1)
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
 Most generic HDL sources can be found in the "./vhdl/" folder.
 
-
-
+run : Project -> Execute Script -> xyz_create.tcl
