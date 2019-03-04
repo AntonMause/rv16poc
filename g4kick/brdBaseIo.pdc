@@ -1,0 +1,20 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings
+# TQ144 footprint on Avnet Kickstart Kit
+#
+# original name : ?CLK? fixed 50 MHz XTL oscillator
+set_io OSC_CLK    -pinname   44   -fixed yes  -DIRECTION INPUT
+
+# DEVRST_N is a fixed pin function for all G4 devices
+
+# USB uart original label : RS232_?XD,  close JP11 & JP12
+set_io UART_RXD   -pinname   1   -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname   2   -fixed yes  -DIRECTION OUTPUT
+
+# original names : PB1?, PB2=?, high if pressed
+set_io PB1        -pinname  143  -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  144  -fixed yes  -DIRECTION INPUT
+
