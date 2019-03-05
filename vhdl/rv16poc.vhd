@@ -59,6 +59,9 @@ signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
 signal s_dec_ins : std_logic_vector(31 downto 0);  -- decoder
 signal s_dec_rs1, s_dec_rs2, s_dec_rd : std_logic_vector(4 downto 0);
 
+signal s_log_in1, s_log_in2, s_log_out : std_logic_vector(16 downto 0);
+signal s_log_opp : std_logic_vector(2 downto 0); -- 0=byp,1=sll,2,3,4=xor,5=srl,6=or,7=and
+
 signal s_mac_run : signed(3 downto 0);  -- ?_SCLR_N ?=sub,c3,b2,a1
 signal s_mac_sub, s_mac_msh : std_logic;
 signal s_mac_in1, s_mac_in2, s_mac_in3, s_mac_out : std_logic_vector(16 downto 0);
@@ -150,9 +153,11 @@ dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0)
     s_reg_ext      <= '0';
     s_pcu_bra      <= '0';
     s_pcu_jmp      <= '0';
+    s_log_in1      <=  s_reg_rs1;
+    s_log_in2      <=  s_reg_rs2;
+    s_log_opp      <= "000"; -- bypass
     s_mac_run      <= (others=>'1');
     s_mac_in1      <= (0=>'1', others=>'0');
-    s_mac_in2      <= (others=>'0');
     s_mac_in3      <= (others=>'0');
     s_mac_sub      <= '0';
     s_mac_msh      <= '0';
@@ -171,7 +176,7 @@ dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0)
 	case s_dec_ins(6 downto 0) is
 	when RV32I_OP_JAL =>     -- add pc + #Imm
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-      s_mac_in2 <= v_ins(15) & v_ins(15 downto 12) & v_ins(20) & v_ins(30 downto 21) & '0'; -- J-Type
+      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & v_ins(20) & v_ins(30 downto 21) & '0'; -- J-Type
       s_pcu_jmp <= '1';
       s_pcu_bra <= '1';
 
@@ -195,6 +200,31 @@ dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0)
 end process;
 
 ----------------------------------------------------------------------
+log_p : process(s_log_opp,s_log_in1,s_log_in2)
+  variable v_pos : integer;
+--variable v_sft : std_logic_vector(4 downto 0);
+  variable v_msk : std_logic_vector(16 downto 0);
+  begin
+    case s_log_opp is -- coding mostly like func3(2:0)
+    when "001" => -- SLL shift left logical
+      v_msk        := (others=>'0');
+      v_pos        :=      to_integer(unsigned(s_log_in2(3 downto 0)));
+      v_msk(v_pos) := not s_log_in2(4); -- result <= NULL if (shamt > 15)
+      s_log_out    <= v_msk;
+    when "101" => -- SRL shift right logical, TODO : handle arithmetic / signed shift rigth
+      v_msk        := (others=>'0');
+      v_pos        := 16 - to_integer(unsigned(s_log_in2(3 downto 0)));
+      v_msk(v_pos) := not s_log_in2(4); -- result <= NULL if (shamt > 15)
+      s_log_out    <= v_msk;
+	when "100" =>  s_log_out  <= (s_log_in1 xor s_log_in2);  -- XOR
+	when "110" =>  s_log_out  <= (s_log_in1  or s_log_in2);  --  OR
+	when "111" =>  s_log_out  <= (s_log_in1 and s_log_in2);  -- AND
+    when others => s_log_out  <=                s_log_in2; -- bypass
+  end case;
+end process;
+
+----------------------------------------------------------------------
+  s_mac_in2 <= s_log_out;
 
 my17Madd_0 : my17Madd port map(  -- c3 +/- (a1 * b2)
         A0         => s_mac_in1,
