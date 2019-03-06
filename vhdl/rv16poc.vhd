@@ -46,7 +46,10 @@ end component;
 ----------------------------------------------------------------------
 -- Constant declarations
 ----------------------------------------------------------------------
+constant RV32I_OP_LUI:		std_logic_vector := "0110111";
+constant RV32I_OP_AUIPC:	std_logic_vector := "0010111";
 constant RV32I_OP_JAL:		std_logic_vector := "1101111";
+constant RV32I_OP_JALR:		std_logic_vector := "1100111";
 
 ----------------------------------------------------------------------
 -- Signal declarations
@@ -57,6 +60,7 @@ signal s_pcu_bra : std_logic; -- branch is with or without storing PC
 signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
 
 signal s_dec_ins : std_logic_vector(31 downto 0);  -- decoder
+signal s_dec_sgn : std_logic_vector(16 downto 0);  -- sign of immediate
 signal s_dec_rs1, s_dec_rs2, s_dec_rd : std_logic_vector(4 downto 0);
 
 signal s_log_in1, s_log_in2, s_log_out : std_logic_vector(16 downto 0);
@@ -121,12 +125,13 @@ rom_p : process(s_clk,i_rst_n)
 rom_tbl_p : process(s_rom_adr(7 downto 0))
   begin                    -- Immediate  source function destination operation
     case s_rom_adr(7 downto 0) is
-    when  x"00" => s_rom_dat <= x"000" & "00000" & "111" & "00000" & "0010011"; -- ANDI   r0 = zero
-    when  x"04" => s_rom_dat <= x"00800"                 & "00001" & "1101111"; -- JAL    pc = pc +8
-    when  x"08" => s_rom_dat <= x"00400"                 & "00010" & "1101111"; -- JAL    pc = pc +4
-  --when  x"0C" => s_rom_dat <= x"000" & "00000" & "111" & "00000" & "0010011"; -- ANDI   r0 = zero
-    when  x"0C" => s_rom_dat <= x"0001"          &                     x"0002"; -- 2x compressed dummys
-    when others => s_rom_dat <= x"FF1FF"                 & "00011" & "1101111"; -- JAL    pc = pc -16
+    when  x"00" => s_rom_dat <= x"87654"                 & "00011" & "0110111"; -- LUI    r3 = #msb
+    when  x"04" => s_rom_dat <= x"00000"                 & "00010" & "0010111"; -- AUIPC  r2 = pc +0
+    when  x"08" => s_rom_dat <= x"00800"                 & "00001" & "1101111"; -- JAL    pc = pc +8
+    when  x"0C" => s_rom_dat <= x"00400"                 & "00000" & "1101111"; -- JAL    pc = pc +4
+    when  x"10" => s_rom_dat <= x"00000"                 & "00000" & "0010011"; -- ADDI   x0 = x0 +0
+    when  x"14" => s_rom_dat <= x"00010"                 & "00001" & "1100111"; -- JALR   pc = x2 +0
+    when others => s_rom_dat <= x"00000"                 & "00000" & "1100111"; -- JALR   pc = x0 +0
   end case;
 end process;
 
@@ -141,14 +146,18 @@ state_p : process(s_clk,s_rst_n)
   end process;
 
 ----------------------------------------------------------------------
-dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0)
+  s_dec_sgn <= (others=>'1') when (s_dec_ins(31) = '1') else (others=>'0');
+
+--dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0,s_dec_sgn,s_dec_rs1,s_dec_rs2)
+dec32_p : process(all)
   variable v_ins : std_logic_vector(31 downto 0);
   variable v_rd  : std_logic_vector( 4 downto 0);
   variable v_wrt : std_logic;
 
   begin
     v_ins          := s_dec_ins; -- instruction shortform
-    v_rd           := s_dec_ins(11 downto 7); -- dest register
+    v_ins(1 downto 0) := "11";   -- reduce decoding logic
+    v_rd           := v_ins(11 downto 7); -- dest register
     v_wrt          := '1'; -- most instructions write to register
     s_reg_ext      <= '0';
     s_pcu_bra      <= '0';
@@ -172,18 +181,32 @@ dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0)
     when others    =>  s_nxt_state   <= I_Idle;
     end case;
 
-	-- Main instruction decoder
-	case s_dec_ins(6 downto 0) is
+	-- Main instruction decoder #############################################
+	case v_ins(6 downto 0) is
+	when RV32I_OP_LUI =>     -- add 0 + #Imm
+      s_mac_in3 <= (others=>'0'); -- todo : better ignore in1 and clear macc input register 
+      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
+
+	when RV32I_OP_AUIPC =>   -- add pc + #Imm
+      s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
+      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
+
 	when RV32I_OP_JAL =>     -- add pc + #Imm
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
       s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & v_ins(20) & v_ins(30 downto 21) & '0'; -- J-Type
       s_pcu_jmp <= '1';
       s_pcu_bra <= '1';
 
+	when RV32I_OP_JALR =>    -- add pc + #Imm
+      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+      s_pcu_jmp <= '1';
+      s_pcu_bra <= '1';
+
 	when others =>
+      v_wrt          := '0';
     end case;
 
-    s_reg_wrt <= '0'; -- default, do not write now
+    s_reg_wrt <= '0'; -- default, do not write now ############################
     case s_cur_state is
     when I_Reset    => v_rd := (others=>'0');      -- overwrite destination ...
                        s_mac_run <= (others=>'0');
@@ -277,7 +300,7 @@ reg_p : process (s_clk)
   begin
     if rising_edge(s_clk) then
       if (s_reg_wrt = '1') then
-        s_reg_mem(to_integer (unsigned(s_dec_ins(11 downto  7)))) <= s_reg_dat(15 downto 0);
+        s_reg_mem(to_integer (unsigned(s_dec_rd))) <= s_reg_dat(15 downto 0);
       end if;
     end if;
   end process;
@@ -327,14 +350,17 @@ end RTL;
 
 -- http://www.kvakil.me/venus/
 --one:
---	  andi    x0, x0, 0
---    jal     x0, two
---    jal     x0, two
+--	lui		x3, 87654
+--    auipc	x2, 0
+--	jal     x1, two
+--	jal     x0, two
 --two:
---	  andi	  x0, x0, 0
---	  jal	  x0, one
---00007013
---0080006f
+--	nop
+--	jalr	x1, x2, 0  
+--	jalr	x0, x0, 0  
+--156661b7
+--00000117
+--008000ef
 --0040006f
---00007013
---ff1ff06f
+--00000013
+--000100e7

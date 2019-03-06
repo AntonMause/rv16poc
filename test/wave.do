@@ -23,8 +23,9 @@ add wave -noupdate /rv16poc_tb/rv16poc_0/s_reg_mem(0)
 add wave -noupdate /rv16poc_tb/rv16poc_0/s_reg_mem(1)
 add wave -noupdate /rv16poc_tb/rv16poc_0/s_reg_mem(2)
 add wave -noupdate /rv16poc_tb/rv16poc_0/s_reg_mem(3)
+add wave -noupdate /rv16poc_tb/rv16poc_0/s_dec_rd
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {677529469 fs} 0}
+WaveRestoreCursors {{Cursor 1} {347836787 fs} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 234
 configure wave -valuecolwidth 100
@@ -40,4 +41,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {540518134 fs} {675304404 fs}
+WaveRestoreZoom {312953367 fs} {447739637 fs}
