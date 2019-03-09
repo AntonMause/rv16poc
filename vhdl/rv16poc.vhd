@@ -50,6 +50,12 @@ constant RV32I_OP_LUI:		std_logic_vector := "0110111";
 constant RV32I_OP_AUIPC:	std_logic_vector := "0010111";
 constant RV32I_OP_JAL:		std_logic_vector := "1101111";
 constant RV32I_OP_JALR:		std_logic_vector := "1100111";
+constant RV32I_OP_LOAD:		std_logic_vector := "0000011";
+constant RV32I_OP_STORE:	std_logic_vector := "0100011";
+constant RV32I_OP_REG_IMM:	std_logic_vector := "0010011";
+constant RV32I_OP_REG_REG:	std_logic_vector := "0110011";
+constant RV32I_OP_FENCE:	std_logic_vector := "0001111";
+constant RV32I_OP_SYS:		std_logic_vector := "1110011";
 
 ----------------------------------------------------------------------
 -- Signal declarations
@@ -71,6 +77,10 @@ signal s_mac_sub, s_mac_msh : std_logic;
 signal s_mac_in1, s_mac_in2, s_mac_in3, s_mac_out : std_logic_vector(16 downto 0);
 signal s_mac_out_all : std_logic_vector(34 downto 0);
 signal s_mac_out_sgn : signed(16 downto 0);
+
+signal s_dat_dat, s_dat_out  : std_logic_vector(15 downto 0);
+signal s_dat_wrt : std_logic;
+signal s_dat_led : std_logic_vector(7 downto 0);
 
 type duo_mem_array is array(0 to 1023) of std_logic_vector(15 downto 0);
 signal s_duo_mem : duo_mem_array;  -- instruction memory 2x16 bit
@@ -119,21 +129,94 @@ rom_p : process(s_clk,i_rst_n)
     end if;
   end process;
   s_rom_wrt <= s_rom_sta(1);
-  s_rom_rdy <= s_rom_adr(5);
+  s_rom_rdy <= s_rom_adr(8);
   s_rst_n   <= s_rom_rdy;
 
 rom_tbl_p : process(s_rom_adr(7 downto 0))
   begin                    -- Immediate  source function destination operation
     case s_rom_adr(7 downto 0) is
-    when  x"00" => s_rom_dat <= x"87654"                 & "00011" & "0110111"; -- LUI    r3 = #msb
-    when  x"04" => s_rom_dat <= x"00000"                 & "00010" & "0010111"; -- AUIPC  r2 = pc +0
-    when  x"08" => s_rom_dat <= x"00800"                 & "00001" & "1101111"; -- JAL    pc = pc +8
-    when  x"0C" => s_rom_dat <= x"00400"                 & "00000" & "1101111"; -- JAL    pc = pc +4
-    when  x"10" => s_rom_dat <= x"00000"                 & "00000" & "0010011"; -- ADDI   x0 = x0 +0
-    when  x"14" => s_rom_dat <= x"00010"                 & "00001" & "1100111"; -- JALR   pc = x2 +0
-    when others => s_rom_dat <= x"00000"                 & "00000" & "1100111"; -- JALR   pc = x0 +0
+    when  x"00" => s_rom_dat <= x"001" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +1
+    when  x"04" => s_rom_dat <= x"FFF" & "00000" & "000" & "00101" & "0010011"; -- ADDI   x5 = x0 -1
+    when  x"08" => s_rom_dat <= x"55555"                 & "00110" & "0110111"; -- LUI    x6 =     #20
+    when  x"0C" => s_rom_dat <= x"555" & "00110" & "000" & "00110" & "0010011"; -- ADDI   x6 = x6 +#12
+
+    when  x"10" => s_rom_dat <= x"00800"                 & "00011" & "1101111"; -- JAL    x3 = pc +4, pc = pc +8
+    when  x"14" => s_rom_dat <= x"00000"                 & "00011" & "0010111"; -- AUIPC  x3 = pc +0 (skipped)
+    when  x"18" => s_rom_dat <= x"00000"                 & "00010" & "0010111"; -- AUIPC  x2 = pc +0
+--    when  x"1C" => s_rom_dat <= x"00400"                 & "00001" & "1101111"; -- JAL    x1 = pc +4, pc = pc +4
+--    when  x"1C" => s_rom_dat <= x"06000"                 & "00000" & "1100111"; -- JALR   pc = $60
+
+    when  x"20" => s_rom_dat <= x"001" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +1  #register init
+    when  x"24" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"28" => s_rom_dat <= x"001" & "00100" & "000" & "00100" & "0010011"; -- ADDI   x4 = x4 +1  #loop << reentry
+    when  x"2C" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop >> run
+
+    when  x"30" => s_rom_dat <= x"001" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +1
+    when  x"34" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"38" => s_rom_dat <= x"001" & "00100" & "001" & "00100" & "0010011"; -- ADDI   x4 = x4 <<1
+    when  x"3C" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop run
+
+    when  x"40" => s_rom_dat <= x"000" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +0
+    when  x"44" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"48" => s_rom_dat <= x"005" & "00100" & "110" & "00100" & "0110011"; -- OR     x4 = x4 or x5
+    when  x"4C" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop run
+
+    when  x"50" => s_rom_dat <= x"0FF" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +$FF
+    when  x"54" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"58" => s_rom_dat <= x"001" & "00100" & "101" & "00100" & "0010011"; -- SRLI   x4 = x4 >> 1
+    when  x"5C" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop run
+
+    when  x"60" => s_rom_dat <= x"008" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +8
+    when  x"64" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"68" => s_rom_dat <= x"FFF" & "00100" & "000" & "00100" & "0010011"; -- ADDI   x4 = x4 -1
+    when  x"6C" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop run
+
+    when  x"70" => s_rom_dat <= x"08000"                 & "00001" & "1100111"; -- JALR   x1 = pc +4  #loop init
+    when  x"74" => s_rom_dat <= x"FFF" & "00000" & "111" & "00100" & "0010011"; -- ANDII  x4 = x0 &   #show nothing
+    when  x"78" => s_rom_dat <= x"09000"                 & "00001" & "1100111"; -- JALR   pc = x0 +?  #loop run
+
+    when  x"7C" => s_rom_dat <= x"02000"                 & "00000" & "1100111"; -- JALR   pc = $60, restart demo loop
+  --when  x"7C" => s_rom_dat <= x"00000"                 & "00000" & "1101111"; -- JAL    pc = pc +0, endless loop
+
+    -- init loop supporter, point x2 to jump table, init x5 to one
+    when  x"80" => s_rom_dat <= x"0A0" & "00000" & "000" & "00010" & "0010011"; -- ADDI   x2 = x0 +$A0
+    when  x"84" => s_rom_dat <= x"001" & "00000" & "000" & "00101" & "0010011"; -- ADDI   x5 = x0 +1
+    when  x"88" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
+    when  x"8C" => s_rom_dat <= x"00008"                 & "00000" & "1100111"; -- JALR   pc = x1 +0  #return from init
+
+    -- call loop supporter, increment x2 jump pointer, shift x5
+    when  x"90" => s_rom_dat <= x"004" & "00010" & "000" & "00010" & "0010011"; -- ADDI   x2 = x2 +4
+    when  x"94" => s_rom_dat <= x"001" & "00101" & "001" & "00101" & "0010011"; -- SLLI   x5 = x5 << +1
+    when  x"98" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
+    when  x"9C" => s_rom_dat <= x"00010"                 & "00000" & "1100111"; -- JALR   pc = x2 +0  #jump into table
+
+    -- loop supporter jump table, call instruction before jump (-8), exept last loop (+0)
+    when  x"A0" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8,
+    when  x"A4" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8, x2=call in loop
+    when  x"A8" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8, x1=return
+    when  x"AC" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8
+    when  x"B0" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8
+    when  x"B4" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8
+    when  x"B8" => s_rom_dat <= x"FF808"                 & "00000" & "1100111"; -- JALR   pc = x1 -8
+    when  x"BC" => s_rom_dat <= x"00008"                 & "00000" & "1100111"; -- JALR   pc = x1 +0
+
+    when others => s_rom_dat <= x"00000"                 & "00000" & "0010011"; -- ADDI   x0 = x0 +0 default nop
   end case;
 end process;
+
+
+  --when  x"00" => s_rom_dat <= x"87654"                 & "00001" & "0110111"; -- LUI    x1 = #20
+  --when  x"10" => s_rom_dat <= x"00108"                 & "00001" & "0010011"; -- ADDI   x1 = x1 +1
+--    when  x"10" => s_rom_dat <= x"00109"                 & "00001" & "0010011"; -- SLLI   x1 = x1 +1
+  --when  x"14" => s_rom_dat <= x"00219"                 & "00000" & "0100011"; -- SH     #12(x3) = x2
+  --when  x"18" => s_rom_dat <= x"00019"                 & "00100" & "0000011"; -- LH     x4 = #12(x3)
+--    when  x"1C" => s_rom_dat <= x"00119"                 & "00000" & "0100011"; -- SH     #12(x3) = x1
+--    when  x"20" => s_rom_dat <= x"00019"                 & "00101" & "0000011"; -- LH     x5 = #12(x3)
+--    when  x"24" => s_rom_dat <= x"00010"                 & "00000" & "1100111"; -- JALR   pc = x2 +0
+--    when  x"3C" => s_rom_dat <= x"00000"                 & "00000" & "1100111"; -- JALR   pc = x0 +0 reboot
+
+
+
 
 ----------------------------------------------------------------------
 state_p : process(s_clk,s_rst_n)
@@ -148,9 +231,9 @@ state_p : process(s_clk,s_rst_n)
 ----------------------------------------------------------------------
   s_dec_sgn <= (others=>'1') when (s_dec_ins(31) = '1') else (others=>'0');
 
---dec32_p : process(s_dec_ins,s_cur_state,s_pcu_pc0,s_dec_sgn,s_dec_rs1,s_dec_rs2)
 dec32_p : process(all)
   variable v_ins : std_logic_vector(31 downto 0);
+  variable v_fu3 : std_logic_vector(2 downto 0);
   variable v_rd  : std_logic_vector( 4 downto 0);
   variable v_wrt : std_logic;
 
@@ -158,6 +241,7 @@ dec32_p : process(all)
     v_ins          := s_dec_ins; -- instruction shortform
     v_ins(1 downto 0) := "11";   -- reduce decoding logic
     v_rd           := v_ins(11 downto 7); -- dest register
+    v_fu3          := v_ins(14 downto 12);
     v_wrt          := '1'; -- most instructions write to register
     s_reg_ext      <= '0';
     s_pcu_bra      <= '0';
@@ -167,9 +251,10 @@ dec32_p : process(all)
     s_log_opp      <= "000"; -- bypass
     s_mac_run      <= (others=>'1');
     s_mac_in1      <= (0=>'1', others=>'0');
-    s_mac_in3      <= (others=>'0');
+    s_mac_in3      <= s_reg_rs1;
     s_mac_sub      <= '0';
     s_mac_msh      <= '0';
+    s_dat_wrt      <= '0';
 
     case s_cur_state is
     when I_Reset   =>  s_nxt_state   <= I_Init;
@@ -183,27 +268,63 @@ dec32_p : process(all)
 
 	-- Main instruction decoder #############################################
 	case v_ins(6 downto 0) is
-	when RV32I_OP_LUI =>     -- add 0 + #Imm
-      s_mac_in3 <= (others=>'0'); -- todo : better ignore in1 and clear macc input register 
+	when RV32I_OP_LUI =>     -- rd = #Imm
+      s_mac_in3 <= (others=>'0');
       s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
 
-	when RV32I_OP_AUIPC =>   -- add pc + #Imm
+	when RV32I_OP_AUIPC =>   -- rd = pc + #Imm
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
       s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
 
-	when RV32I_OP_JAL =>     -- add pc + #Imm
+	when RV32I_OP_JAL =>     -- pc = pc + #Imm, rd = pc +4
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
       s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & v_ins(20) & v_ins(30 downto 21) & '0'; -- J-Type
       s_pcu_jmp <= '1';
       s_pcu_bra <= '1';
 
-	when RV32I_OP_JALR =>    -- add pc + #Imm
+	when RV32I_OP_JALR =>    -- pc = rs1 + #Imm, rd = pc +4
       s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
       s_pcu_jmp <= '1';
       s_pcu_bra <= '1';
 
+	when RV32I_OP_LOAD =>    -- rd = #Imm(rs1)
+      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+      s_reg_ext <= '1';
+
+	when RV32I_OP_STORE =>   -- #Imm(rs1) = rs2
+      s_mac_in3 <= (others=>'0');
+      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 25) & v_ins(11 downto 7); -- S-Type
+      s_dat_wrt <= '1';
+      v_wrt     := '0';
+
+	when RV32I_OP_REG_IMM | RV32I_OP_REG_REG =>
+      if (v_ins(5)='0') then -- 0=Immediate 1=Register
+        s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+      end if; -- else / default=rs2
+      case v_fu3 is
+        when "000" =>
+          if (v_ins(5) = '1') then -- 0=Immediate 1=Register
+            s_mac_sub <= v_ins(30); -- 0=add 1=sub
+          end if;
+        when "001" | "101" => -- shift left / shift right
+          s_mac_in1 <= s_reg_rs1;
+          s_mac_in3 <= (others=>'0');
+          s_log_opp <= v_fu3(2 downto 0);
+          s_mac_msh <= v_fu3(2);
+        when "100" | "110" | "111" => -- XOR / OR / AND
+          s_mac_in3 <= (others=>'0');
+          s_log_opp <= v_fu3(2 downto 0);
+        when others =>
+      end case;
+
+	when RV32I_OP_FENCE =>
+      v_wrt     := '0';
+
+	when RV32I_OP_SYS =>
+      v_wrt     := '0';
+
 	when others =>
-      v_wrt          := '0';
+      v_wrt     := '0';
     end case;
 
     s_reg_wrt <= '0'; -- default, do not write now ############################
@@ -225,7 +346,6 @@ end process;
 ----------------------------------------------------------------------
 log_p : process(s_log_opp,s_log_in1,s_log_in2)
   variable v_pos : integer;
---variable v_sft : std_logic_vector(4 downto 0);
   variable v_msk : std_logic_vector(16 downto 0);
   begin
     case s_log_opp is -- coding mostly like func3(2:0)
@@ -291,8 +411,7 @@ pcu_p : process(s_clk,s_rst_n)
   s_pcu_nxt <= s_pcu_pcx when (s_pcu_bra = '0') else unsigned(s_mac_out(15 downto 0));
 
 ----------------------------------------------------------------------
---ori  s_reg_dat  <= s_dat_out(15 downto 0)                   when (s_reg_ext='1') 
-  s_reg_dat  <= x"BEEF"                                  when (s_reg_ext='1') 
+  s_reg_dat  <= s_dat_out(15 downto 0)                   when (s_reg_ext='1') 
            else std_logic_vector(s_pcu_pcx(15 downto 0)) when (s_pcu_jmp='1')
            else s_mac_out(15 downto 0);
 
@@ -307,9 +426,27 @@ reg_p : process (s_clk)
   s_dec_rs1              <= s_dec_ins(19 downto 15); -- register source one
   s_dec_rs2              <= s_dec_ins(24 downto 20); -- register source two
   s_reg_rs1(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs1)));
-  s_reg_rs2(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs1)));
+  s_reg_rs2(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs2)));
   s_reg_rs1(16)          <= s_reg_rs1(15);
   s_reg_rs2(16)          <= s_reg_rs2(15);
+
+----------------------------------------------------------------------
+  s_dat_dat <= s_reg_rs2(15 downto 0);  -- use LEDs to dummy data access
+
+led_p : process (s_clk, s_rst_n)
+  begin
+    if (s_rst_n = '0') then
+      s_dat_led <= x"11";
+    elsif (s_clk'event and s_clk = '1') then
+      if (s_dat_wrt='1') then
+        if s_cur_state = I_Update then
+          s_dat_led <= s_dat_dat(7 downto 0);
+        end if;
+      end if;
+    end if;
+  end process;
+  o_led     <= s_dat_led;
+  s_dat_out <= x"00" & s_dat_led;
 
 ----------------------------------------------------------------------
   s_duo_adr0 <= std_logic_vector(s_rom_adr(10 downto 2)) & '0' when (s_rst_n='0') else '0' & std_logic_vector(s_pcu_pc0(9 downto 1));
@@ -340,11 +477,6 @@ duo_mem_p : process (i_clk)
   s_dec_ins <= s_duo_out1 & s_duo_out0;
 
 ----------------------------------------------------------------------
---o_led     <= std_logic_vector(s_pcu_pc0(4 downto 1)) & std_logic_vector(s_pcu_nxt(4 downto 1));
-  o_led     <= 
-    std_logic_vector(s_dec_ins(31 downto 24)) xor std_logic_vector(s_dec_ins(23 downto 16)) xor
-    std_logic_vector(s_dec_ins(15 downto  8)) xor std_logic_vector(s_dec_ins( 7 downto  0)) xor
-    std_logic_vector(s_pcu_nxt( 7 downto  0));
 
 end RTL;
 

@@ -64,7 +64,7 @@ begin
         if ( vhdl_initial ) then
             -- Assert Reset
             NSYSRESET <= '0';
-            wait for ( SYSCLK_PERIOD * 10 );
+            wait for ( SYSCLK_PERIOD * 2 );
             
             NSYSRESET <= '1';
             wait;

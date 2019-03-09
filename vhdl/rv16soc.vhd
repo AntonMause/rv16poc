@@ -77,8 +77,10 @@ mySynCnt_0 : mySynCnt
     i_clk   => s_clk,
     o_q     => s_cnt );
 
-  s_clk2 <= s_clk;
---s_clk2 <= s_cnt(16);
+--s_clk2 <= s_clk;     -- full speed
+--s_clk2 <= s_cnt(16); -- slow
+  s_clk2 <= s_cnt(18); -- slower
+--s_clk2 <= s_cnt(20); -- real slow
 
 rv16poc_0 : rv16poc 
   port map( 
