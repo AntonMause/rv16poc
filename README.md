@@ -26,10 +26,10 @@ No, I will not rewrite this core from scratch, it is just a POC as the name stat
 
 #### Resource utilisation :
 
-###### -1x LSRAM 18k -> 1k x 16 bit (instruction)
-###### -1x URAM  1k  -> 64 x 16 bit (register)
+###### -1x LSRAM 18k  -> 1k x 16 bit (instruction)
+###### -1x g4 URAM 1k -> 64 x 16 bit (register) g5=4x
 ###### -1x MACC  17 bit signed (alu)
-###### -500 LE  (this is what you find around each MACC)
+###### -600 LE  (this is what you find around each MACC)
 
 The current snapshot is intended to use Libero SoC version 12.0 (2019q1)
 
@@ -53,7 +53,7 @@ Supported FPGA famlies / boards & hardware :
 #### G5 := (28nm)  MPF/Microsemi PolarFire
 
 #### Avnet SmartFusion2 / Igloo2 KickStart Kit in folder g4kick
-#### did some testing on Polarfire too
+#### Microsemi Polarfire Splash Kit in folder g5splash
 
 ToDo / Ideas :
 

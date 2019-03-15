@@ -80,6 +80,7 @@ signal s_mac_run : signed(3 downto 0);  -- ?_SCLR_N ?=sub,c3,b2,a1
 signal s_mac_sub, s_mac_msh, s_mac_uns : std_logic;
 signal s_mac_in1, s_mac_in2, s_mac_in3, s_mac_out : std_logic_vector(16 downto 0);
 signal s_mac_out_all : std_logic_vector(34 downto 0);
+signal s_mac_out_sgn : signed(33 downto 0);
 
 signal s_dat_dat, s_dat_out  : std_logic_vector(15 downto 0);
 signal s_dat_wrt : std_logic; -- write to data bus (store instruction)
@@ -96,7 +97,7 @@ signal s_duo_wrt0, s_duo_wrt1     : std_logic;
 type reg_mem_type is array (31 downto 0) of std_logic_vector (15 downto 0);
 signal s_reg_mem : reg_mem_type;  -- register bank 1x In 2x Out (g4)
 signal s_reg_dat : std_logic_vector(15 downto 0);
-signal s_reg_wrt, s_reg_ext : std_logic;
+signal s_reg_wrt, s_reg_ext, s_reg_clr : std_logic;
 signal s_reg_rs1, s_reg_rs2 : std_logic_vector(16 downto 0);
 
 type t_state is (I_Reset, I_Init, I_Idle, I_Fetch, I_Decode, I_Branch, I_Execute, I_Update);
@@ -357,13 +358,17 @@ dec32_p : process(all)
     case s_cur_state is
     when I_Reset    => v_rd := (others=>'0');      -- overwrite destination ...
                        s_mac_run <= (others=>'0');
+                       s_reg_clr <= '1';
     when I_Init     => v_rd := (others=>'0');      -- ... to zero x0 register
                        s_mac_run <= (others=>'0'); -- force MACC output to zero
                        s_reg_wrt <= '1';
+                       s_reg_clr <= '1';
     when I_Execute  => if (v_rd/="00000") then         
                          s_reg_wrt <= v_wrt;
                        end if;
+                       s_reg_clr      <= '0';
 	when others =>
+                       s_reg_clr      <= '0';
     end case;
     s_dec_rd <= v_rd;
 
@@ -416,7 +421,21 @@ my17Madd_0 : my17Madd port map(  -- c3 +/- (a1 * b2)
         SUB_SCLR_N => s_mac_run(3),
         CARRYOUT   => open,
         CDOUT      => open,
-        P          => s_mac_out_all );
+        P          => open);
+      --P          => s_mac_out_all );
+
+mac_p : process (s_clk)
+  begin
+    if rising_edge(s_clk) then
+      if (s_mac_sub = '0') then
+        s_mac_out_sgn <= signed(s_mac_in3) + ( signed(s_mac_in1) * signed(s_mac_in2) );
+     else
+        s_mac_out_sgn <= signed(s_mac_in3) - ( signed(s_mac_in1) * signed(s_mac_in2) );
+      end if;
+    end if; 
+  end process;
+  s_mac_out_all <= '0' & std_logic_vector(s_mac_out_sgn);
+
   s_mac_out  <= std_logic_vector(s_mac_out_all(16 downto 0)) when (s_mac_msh='0')
            else std_logic_vector(s_mac_out_all(32 downto 16));
 
@@ -443,6 +462,7 @@ pcu_p : process(s_clk,s_rst_n)
   s_reg_dat  <= s_dat_out(15 downto 0)                   when (s_reg_ext='1') 
            else std_logic_vector(s_pcu_pcx(15 downto 0)) when (s_pcu_jmp='1')
            else "00000000" & "0000000" & s_mac_out(16)   when (s_dec_slt='1')
+           else "00000000" & "00000000"                  when (s_reg_clr='1')
            else s_mac_out(15 downto 0);
 
 reg_p : process (s_clk)

@@ -1,0 +1,19 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2018 by Anton Mause 
+# 
+# User Locked I/O settings
+# FCG484 footprint on Microsemi Splash Kit
+#
+
+#set_iobank -vcci x.yz -fixed true
+
+# Naming is one off 0->1  7->8
+set_io -port_name   LED0       -pin_name   P7  -fixed true
+set_io -port_name   LED1       -pin_name   P8  -fixed true
+set_io -port_name   LED2       -pin_name   N7  -fixed true
+set_io -port_name   LED3       -pin_name   N8  -fixed true
+set_io -port_name   LED4       -pin_name   N6  -fixed true
+set_io -port_name   LED5       -pin_name   N5  -fixed true
+set_io -port_name   LED6       -pin_name   M8  -fixed true
+set_io -port_name   LED7       -pin_name   M9  -fixed true
