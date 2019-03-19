@@ -14,7 +14,7 @@ use work.brdConst_pkg.all;
 ----------------------------------------------------------------------
 entity rv16soc is
   port( OSC_CLK  : in  std_logic;
-      --DEVRST_N : in  std_logic;
+        DEVRST_N : in  std_logic;
         PB1      : in  std_logic;
         PB2      : in  std_logic;
         LED0     : out std_logic;
@@ -46,6 +46,7 @@ end component;
 component rv16poc port( 
   i_clk : in std_logic;
   i_rst_n : in std_logic;
+  o_dbg     : out std_logic_vector(7 downto 0);
   o_led : out std_logic_vector(7 downto 0) );
 end component;
 
@@ -55,37 +56,32 @@ constant c_pbx : std_logic := BRD_BTN_POL;
 signal s_clk, s_clk2, s_rst_n : std_logic;
 signal s_pb1, s_pb2, s_rst_in : std_logic;
 signal s_cnt : std_logic_vector(28 downto 0);
-signal s_led : std_logic_vector(7 downto 0);
+signal s_dbg, s_led : std_logic_vector(7 downto 0);
 
 begin
 
   s_pb1    <= c_pbx xor PB1;
   s_pb2    <= c_pbx xor PB2;
-  s_rst_in <= not (s_pb1 or s_pb2);
+  s_rst_in <= not (s_pb1 or s_pb2 or DEVRST_N);
 
 brdRstClk_0 : brdRstClk
   port map(
-    i_rst_n => s_rst_in,
+    i_rst_n => DEVRST_N,
     i_clk   => OSC_CLK,
     o_rst_n => s_rst_n,
     o_clk   => s_clk );
 
-mySynCnt_0 : mySynCnt
-  generic map( N => s_cnt'high+1 )
-  port map(
-    i_rst_n => s_rst_n,
-    i_clk   => s_clk,
-    o_q     => s_cnt );
-
---s_clk2 <= s_clk;     -- full speed
+  s_clk2 <= s_clk;     -- full speed
+--s_clk2 <= s_cnt(4);  -- fast
 --s_clk2 <= s_cnt(16); -- slow
-  s_clk2 <= s_cnt(18); -- slower
+--s_clk2 <= s_cnt(18); -- slower
 --s_clk2 <= s_cnt(20); -- real slow
 
 rv16poc_0 : rv16poc 
   port map( 
     i_clk   => s_clk2,
     i_rst_n => s_rst_n,
+    o_dbg   => s_dbg,
     o_led   => s_led );
 
   LED0   <=  c_lex xor s_led(0);
@@ -97,7 +93,7 @@ rv16poc_0 : rv16poc
   LED6   <=  c_lex xor s_led(6);
   LED7   <=  c_lex xor s_led(7);
 
-  UART_TXD <= UART_RXD; --  xor s_pb1 xor s_pb2; -- dummy
+  UART_TXD <= UART_RXD xor s_dbg(0) xor s_dbg(1); --  xor s_pb1 xor s_pb2; -- dummy
 
 end rtl;
 ----------------------------------------------------------------------

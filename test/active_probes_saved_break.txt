@@ -1,0 +1,125 @@
+rv16poc_0\/s_pcu_bra_Z:rv16poc_0\/s_pcu_bra:Q
+Bus rv16poc_0\/s_pcu_pc0[15:0] display_format hex
+rv16poc_0\/s_pcu_pc0[15]_net_1:rv16poc_0\/s_pcu_pc0[15]:Q
+rv16poc_0\/s_pcu_pc0[14]_net_1:rv16poc_0\/s_pcu_pc0[14]:Q
+rv16poc_0\/s_pcu_pc0[13]_net_1:rv16poc_0\/s_pcu_pc0[13]:Q
+rv16poc_0\/s_pcu_pc0[12]_net_1:rv16poc_0\/s_pcu_pc0[12]:Q
+rv16poc_0\/s_pcu_pc0[11]_net_1:rv16poc_0\/s_pcu_pc0[11]:Q
+rv16poc_0\/s_pcu_pc0[10]_net_1:rv16poc_0\/s_pcu_pc0[10]:Q
+rv16poc_0\/s_pcu_pc0[9]_net_1:rv16poc_0\/s_pcu_pc0[9]:Q
+rv16poc_0\/s_pcu_pc0[8]_net_1:rv16poc_0\/s_pcu_pc0[8]:Q
+rv16poc_0\/s_pcu_pc0[7]_net_1:rv16poc_0\/s_pcu_pc0[7]:Q
+rv16poc_0\/s_pcu_pc0[6]_net_1:rv16poc_0\/s_pcu_pc0[6]:Q
+rv16poc_0\/s_pcu_pc0[5]_net_1:rv16poc_0\/s_pcu_pc0[5]:Q
+rv16poc_0\/s_pcu_pc0[4]_net_1:rv16poc_0\/s_pcu_pc0[4]:Q
+rv16poc_0\/s_pcu_pc0[3]_net_1:rv16poc_0\/s_pcu_pc0[3]:Q
+rv16poc_0\/s_pcu_pc0[2]_net_1:rv16poc_0\/s_pcu_pc0[2]:Q
+rv16poc_0\/s_pcu_pc0[1]_net_1:rv16poc_0\/s_pcu_pc0[1]:Q
+rv16poc_0\/s_pcu_pc0[0]_net_1:rv16poc_0\/s_pcu_pc0[0]:Q
+Bus end
+LED0_c:rv16poc_0\/s_dat_led[0]:Q
+LED1_c:rv16poc_0\/s_dat_led[1]:Q
+LED2_c:rv16poc_0\/s_dat_led[2]:Q
+LED3_c:rv16poc_0\/s_dat_led[3]:Q
+LED4_c:rv16poc_0\/s_dat_led[4]:Q
+LED5_c:rv16poc_0\/s_dat_led[5]:Q
+LED6_c:rv16poc_0\/s_dat_led[6]:Q
+LED7_c:rv16poc_0\/s_dat_led[7]:Q
+Bus rv16poc_0\/s_reg_mem[15:0] display_format hex
+rv16poc_0\/s_reg_mem[15]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[15]
+rv16poc_0\/s_reg_mem[14]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[14]
+rv16poc_0\/s_reg_mem[13]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[13]
+rv16poc_0\/s_reg_mem[12]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[12]
+rv16poc_0\/s_reg_mem[11]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[11]
+rv16poc_0\/s_reg_mem[10]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[10]
+rv16poc_0\/s_reg_mem[9]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[9]
+rv16poc_0\/s_reg_mem[8]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[8]
+rv16poc_0\/s_reg_mem[7]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[7]
+rv16poc_0\/s_reg_mem[6]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[6]
+rv16poc_0\/s_reg_mem[5]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[5]
+rv16poc_0\/s_reg_mem[4]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[4]
+rv16poc_0\/s_reg_mem[3]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[3]
+rv16poc_0\/s_reg_mem[2]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[2]
+rv16poc_0\/s_reg_mem[1]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[1]
+rv16poc_0\/s_reg_mem[0]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_DOUT[0]
+Bus end
+Bus rv16poc_0\/s_reg_mem_1[15:0] display_format hex
+rv16poc_0\/s_reg_mem_1[15]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[15]
+rv16poc_0\/s_reg_mem_1[14]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[14]
+rv16poc_0\/s_reg_mem_1[13]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[13]
+rv16poc_0\/s_reg_mem_1[12]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[12]
+rv16poc_0\/s_reg_mem_1[11]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[11]
+rv16poc_0\/s_reg_mem_1[10]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[10]
+rv16poc_0\/s_reg_mem_1[9]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[9]
+rv16poc_0\/s_reg_mem_1[8]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[8]
+rv16poc_0\/s_reg_mem_1[7]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[7]
+rv16poc_0\/s_reg_mem_1[6]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[6]
+rv16poc_0\/s_reg_mem_1[5]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[5]
+rv16poc_0\/s_reg_mem_1[4]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[4]
+rv16poc_0\/s_reg_mem_1[3]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[3]
+rv16poc_0\/s_reg_mem_1[2]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[2]
+rv16poc_0\/s_reg_mem_1[1]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[1]
+rv16poc_0\/s_reg_mem_1[0]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_DOUT[0]
+Bus end
+Bus rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[9:0] display_format hex
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[9]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[9]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[8]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[8]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[7]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[7]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[6]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[6]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[5]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[5]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[4]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[4]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[3]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[3]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[2]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[2]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[1]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[1]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/A_ADDR_net[0]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:A_ADDR[0]
+Bus end
+Bus rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[9:0] display_format hex
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[9]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[9]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[8]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[8]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[7]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[7]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[6]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[6]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[5]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[5]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[4]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[4]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[3]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[3]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[2]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[2]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[1]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[1]
+rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/B_ADDR_net[0]:rv16poc_0\/s_reg_mem_1_s_reg_mem_1_0_0/INST_RAM64x18_IP:B_ADDR[0]
+Bus end
+Bus s_dbg[1:0] display_format hex
+s_dbg[1]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[1]
+s_dbg[0]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[0]
+Bus end
+Bus rv16poc_0\/s_duo_mem_1[15:0] display_format hex
+rv16poc_0\/s_duo_mem_1[15]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[15]
+rv16poc_0\/s_duo_mem_1[14]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[14]
+rv16poc_0\/s_duo_mem_1[13]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[13]
+rv16poc_0\/s_duo_mem_1[12]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[12]
+rv16poc_0\/s_duo_mem_1[11]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[11]
+rv16poc_0\/s_duo_mem_1[10]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[10]
+rv16poc_0\/s_duo_mem_1[9]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[9]
+rv16poc_0\/s_duo_mem_1[8]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[8]
+rv16poc_0\/s_duo_mem_1[7]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[7]
+rv16poc_0\/s_duo_mem_1[6]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[6]
+rv16poc_0\/s_duo_mem_1[5]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[5]
+rv16poc_0\/s_duo_mem_1[4]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[4]
+rv16poc_0\/s_duo_mem_1[3]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[3]
+rv16poc_0\/s_duo_mem_1[2]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[2]
+rv16poc_0\/s_duo_mem_1[1]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[1]
+rv16poc_0\/s_duo_mem_1[0]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:A_DOUT[0]
+Bus end
+Bus rv16poc_0\/s_duo_mem[15:2] display_format hex
+rv16poc_0\/s_duo_mem[15]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[15]
+rv16poc_0\/s_duo_mem[14]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[14]
+rv16poc_0\/s_duo_mem[13]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[13]
+rv16poc_0\/s_duo_mem[12]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[12]
+rv16poc_0\/s_duo_mem[11]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[11]
+rv16poc_0\/s_duo_mem[10]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[10]
+rv16poc_0\/s_duo_mem[9]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[9]
+rv16poc_0\/s_duo_mem[8]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[8]
+rv16poc_0\/s_duo_mem[7]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[7]
+rv16poc_0\/s_duo_mem[6]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[6]
+rv16poc_0\/s_duo_mem[5]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[5]
+rv16poc_0\/s_duo_mem[4]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[4]
+rv16poc_0\/s_duo_mem[3]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[3]
+rv16poc_0\/s_duo_mem[2]:rv16poc_0\/s_duo_mem_1_s_duo_mem_1_0_0/INST_RAM1K18_IP:B_DOUT[2]
+Bus end

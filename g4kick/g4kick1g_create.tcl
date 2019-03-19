@@ -58,9 +58,7 @@ project_settings -hdl {VHDL} -auto_update_modelsim_ini 1 -auto_update_viewdraw_i
 create_links \
     -convert_EDN_to_HDL 0 \
     -hdl_source {./brdConst_pkg.vhd} \
-    -hdl_source {./my17Madd.vhd} \
-    -hdl_source {./my17Madd_my17Madd_0_HARD_MULT_ADDSUB.vhd} \
-    -hdl_source {../vhdl/brdRstClk.vhd} \
+    -hdl_source $PATH_POOL/brdRstClk.vhd \
     -hdl_source {../vhdl/mySynCnt.vhd} \
     -hdl_source {../vhdl/rv16poc.vhd} \
     -hdl_source {../vhdl/rv16soc.vhd} 
@@ -84,8 +82,9 @@ import_files \
     -library {work} \
     -simulation {../test/wave.do} 
 
-# import !failes! so we take generated vhd
-#import_component -file {./my17Madd.cxf} 
+source $PATH_POOL/g4myOSC.tcl
+source $PATH_POOL/g4myCCC.tcl
+source $PATH_POOL/g4my17Madd.tcl
 
 build_design_hierarchy 
 set_root -module {rv16soc::work} 

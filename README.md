@@ -53,7 +53,7 @@ Supported FPGA famlies / boards & hardware :
 #### G5 := (28nm)  MPF/Microsemi PolarFire
 
 #### Avnet SmartFusion2 / Igloo2 KickStart Kit in folder g4kick
-#### Microsemi Polarfire Splash Kit in folder g5splash
+#### Microsemi Polarfire Splash Kit in folder g5splash (not up to date for debug/break)
 
 ToDo / Ideas :
 

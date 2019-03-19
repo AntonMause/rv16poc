@@ -147,13 +147,13 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"0C" => s_rom_dat <= x"555" & "00011" & "000" & "00011" & "0010011"; -- ADDI   x3 = x3 +#12
 
     -- skip second instruction, branch back, make x2=x1, so BNE continues
-    when  x"10" => s_rom_dat <= x"00800"                 & "00001" & "1101111"; -- JAL    x1 = pc +4, pc = pc +$8
+    when  x"10" => s_rom_dat <= x"00800"                 & "00001" & "1101101"; -- JAL    x1 = pc +4, pc = pc +$8
     when  x"14" => s_rom_dat <= x"000" & "00010" & "000" & "00001" & "0010011"; -- ADDI   x1 = x2 +0
     when  x"18" => s_rom_dat <= x"00000"                 & "00010" & "0010111"; -- AUIPC  x2 = pc +0
     when  x"1C" => s_rom_dat <= x"FE1" & "00010" & "001" & "11001" & "1100011"; -- BNE    x1, x2, -8
 
     -- rigth shift logical, so will end up at zero
-    when  x"20" => s_rom_dat <= x"F00" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +?
+    when  x"20" => s_rom_dat <= x"F00" & "00000" & "000" & "00100" & "0010010"; -- ADDI   x4 = x0 +?
     when  x"24" => s_rom_dat <= x"003" & "00100" & "101" & "00100" & "0010011"; -- SRLI   x4 = x4 >> 3
     when  x"28" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
 --  when  x"2C" => s_rom_dat <= x"FE4" & "00000" & "110" & "11001" & "1100011"; -- BLTU   x0, x4, -8, last = 0
@@ -173,7 +173,8 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"4C" => s_rom_dat <= x"004" & "00011" & "110" & "00011" & "0110011"; -- OR     x3 = x3 or  x4
     when  x"50" => s_rom_dat <= x"004" & "00010" & "100" & "00010" & "0110011"; -- XOR    x2 = x2 or  x4
     when  x"54" => s_rom_dat <= x"001" & "00100" & "001" & "00100" & "0010011"; -- SLLI   x4 = x4 << 1
-    when  x"58" => s_rom_dat <= x"0FF" & "00100" & "111" & "00100" & "0010011"; -- ANDI   x4 = x4 and $FF
+--  when  x"58" => s_rom_dat <= x"0FF" & "00100" & "111" & "00100" & "0010011"; -- ANDI   x4 = x4 and $FF
+    when  x"88" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
     when  x"5C" => s_rom_dat <= x"FE0" & "00100" & "001" & "10001" & "1100011"; -- BNE    x4, x0, -16,
 
     -- set bit zero in rd if rs1 is lower than rs2 / #immediate
@@ -452,7 +453,7 @@ pcu_p : process(s_clk,s_rst_n)
   end process;
   s_pcu_pc2 <= s_pcu_pc0 +2; -- point to second half of current instruction / behind 16 bit instruction
   s_pcu_pc4 <= s_pcu_pc0 +4; -- point behind 32 bit instruction
-  s_pcu_pcx <= s_pcu_pc4 when (s_dec_ins(1 downto 0) = "11") else s_pcu_pc2;
+  s_pcu_pcx <= s_pcu_pc4; --when (s_dec_ins(1 downto 0) = "11") else s_pcu_pc2;
   s_pcu_nxt <= unsigned(s_mac_out(15 downto 0)) when (s_pcu_bra='1') 
           else unsigned(s_mac_out(15 downto 0)) when (s_pcu_jmp='1') 
           else s_pcu_pcx;
@@ -524,8 +525,8 @@ duo_mem_p : process (i_clk)
   s_duo_out0 <= s_duo_mem(to_integer(unsigned(s_duo_adr0_reg)));
   s_duo_out1 <= s_duo_mem(to_integer(unsigned(s_duo_adr1_reg)));
 
-  s_dec_ins <= s_duo_out1 & s_duo_out0; -- complete decoding
-  --s_dec_ins <= s_duo_out1 & s_duo_out0(15 downto 2) & "11";
+--s_dec_ins <= s_duo_out1 & s_duo_out0; -- complete decoding
+  s_dec_ins <= s_duo_out1 & s_duo_out0(15 downto 2) & "11"; -- use lsb for break
   s_dec_brk <= s_duo_out0(1 downto 0); -- (mis)use length coding for break
 
   o_dbg <= "000000" & s_dec_brk;
