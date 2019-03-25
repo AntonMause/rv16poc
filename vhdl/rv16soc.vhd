@@ -71,6 +71,13 @@ brdRstClk_0 : brdRstClk
     o_rst_n => s_rst_n,
     o_clk   => s_clk );
 
+mySynCnt_0 : mySynCnt
+  generic map( N => s_cnt'high+1 )
+  port map(
+    i_rst_n => s_rst_n,
+    i_clk   => s_clk,
+    o_q     => s_cnt );
+
   s_clk2 <= s_clk;     -- full speed
 --s_clk2 <= s_cnt(4);  -- fast
 --s_clk2 <= s_cnt(16); -- slow
@@ -84,16 +91,16 @@ rv16poc_0 : rv16poc
     o_dbg   => s_dbg,
     o_led   => s_led );
 
-  LED0   <=  c_lex xor s_led(0);
-  LED1   <=  c_lex xor s_led(1);
-  LED2   <=  c_lex xor s_led(2);
+  LED0   <=  s_dbg(0); -- c_lex xor s_led(0);
+  LED1   <=  s_dbg(1); -- c_lex xor s_led(1);
+  LED2   <=  s_dbg(2); -- c_lex xor s_led(2);
   LED3   <=  c_lex xor s_led(3);
   LED4   <=  c_lex xor s_led(4);
   LED5   <=  c_lex xor s_led(5);
   LED6   <=  c_lex xor s_led(6);
   LED7   <=  c_lex xor s_led(7);
 
-  UART_TXD <= UART_RXD xor s_dbg(0) xor s_dbg(1); --  xor s_pb1 xor s_pb2; -- dummy
+  UART_TXD <= UART_RXD xor s_pb1 xor s_pb2; -- dummy
 
 end rtl;
 ----------------------------------------------------------------------

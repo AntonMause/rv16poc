@@ -66,10 +66,10 @@ signal s_pcu_pc0, s_pcu_pc2, s_pcu_pc4, s_pcu_pcx, s_pcu_nxt : unsigned(15 downt
 signal s_clk, s_rst_n : std_logic;
 signal s_pcu_bra : std_logic; -- branch is without storing PC
 signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
+signal s_pcu_brk : std_logic; -- breakpoint flag
 
 signal s_dec_ins : std_logic_vector(31 downto 0);  -- decoder
 signal s_dec_slt : std_logic; -- current opcode is set lower than xyz
-signal s_dec_brk : std_logic_vector( 1 downto 0);  -- breakpoint
 signal s_dec_sgn : std_logic_vector(16 downto 0);  -- sign of immediate
 signal s_dec_rs1, s_dec_rs2, s_dec_rd : std_logic_vector(4 downto 0);
 
@@ -147,13 +147,13 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"0C" => s_rom_dat <= x"555" & "00011" & "000" & "00011" & "0010011"; -- ADDI   x3 = x3 +#12
 
     -- skip second instruction, branch back, make x2=x1, so BNE continues
-    when  x"10" => s_rom_dat <= x"00800"                 & "00001" & "1101101"; -- JAL    x1 = pc +4, pc = pc +$8
+    when  x"10" => s_rom_dat <= x"00800"                 & "00001" & "1101110"; -- JAL    x1 = pc +4, pc = pc +$8
     when  x"14" => s_rom_dat <= x"000" & "00010" & "000" & "00001" & "0010011"; -- ADDI   x1 = x2 +0
     when  x"18" => s_rom_dat <= x"00000"                 & "00010" & "0010111"; -- AUIPC  x2 = pc +0
     when  x"1C" => s_rom_dat <= x"FE1" & "00010" & "001" & "11001" & "1100011"; -- BNE    x1, x2, -8
 
     -- rigth shift logical, so will end up at zero
-    when  x"20" => s_rom_dat <= x"F00" & "00000" & "000" & "00100" & "0010010"; -- ADDI   x4 = x0 +?
+    when  x"20" => s_rom_dat <= x"F00" & "00000" & "000" & "00100" & "0010001"; -- ADDI   x4 = x0 +?
     when  x"24" => s_rom_dat <= x"003" & "00100" & "101" & "00100" & "0010011"; -- SRLI   x4 = x4 >> 3
     when  x"28" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
 --  when  x"2C" => s_rom_dat <= x"FE4" & "00000" & "110" & "11001" & "1100011"; -- BLTU   x0, x4, -8, last = 0
@@ -190,7 +190,8 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"70" => s_rom_dat <= x"005" & "00110" & "010" & "00010" & "0110011"; -- SLT    x2 = (-1<+1)?1:0
     when  x"74" => s_rom_dat <= x"005" & "00110" & "011" & "00011" & "0110011"; -- SLTU   x3 = (-1<+1)?1:0
 
-    when  x"78" => s_rom_dat <= x"00019"                 & "00100" & "0000011"; -- LH     x4 = #12(x3)
+  --when  x"78" => s_rom_dat <= x"00019"                 & "00100" & "0000011"; -- LH     x4 = #12(x3)
+    when  x"78" => s_rom_dat <= x"00100"                 & "00000" & "1110011"; -- EBREAK
     when  x"7C" => s_rom_dat <= x"02000"                 & "00000" & "1100111"; -- JALR   pc = $20, restart demo loop
   --when  x"7C" => s_rom_dat <= x"00000"                 & "00000" & "1101111"; -- JAL    pc = pc +0, endless loop
 
@@ -255,6 +256,7 @@ dec32_p : process(all)
     s_mac_uns      <= '0'; -- 0=signed, 1=unsigned
     s_dat_wrt      <= '0';
     s_dec_slt      <= '0'; -- any SLT instruction in progress
+    s_pcu_brk      <= not s_dec_ins(0); -- '0';
 
     case s_cur_state is
     when I_Reset   =>  s_nxt_state   <= I_Init;
@@ -350,6 +352,7 @@ dec32_p : process(all)
 
 	when RV32I_OP_SYS =>
       v_wrt     := '0';
+      s_pcu_brk <= v_ins(20); -- break
 
 	when others =>
       v_wrt     := '0';
@@ -525,11 +528,9 @@ duo_mem_p : process (i_clk)
   s_duo_out0 <= s_duo_mem(to_integer(unsigned(s_duo_adr0_reg)));
   s_duo_out1 <= s_duo_mem(to_integer(unsigned(s_duo_adr1_reg)));
 
---s_dec_ins <= s_duo_out1 & s_duo_out0; -- complete decoding
-  s_dec_ins <= s_duo_out1 & s_duo_out0(15 downto 2) & "11"; -- use lsb for break
-  s_dec_brk <= s_duo_out0(1 downto 0); -- (mis)use length coding for break
+  s_dec_ins <= s_duo_out1 & s_duo_out0;
 
-  o_dbg <= "000000" & s_dec_brk;
+  o_dbg <= "00000" & s_pcu_brk & not s_dec_ins(1) & not s_dec_ins(0);
 
 ----------------------------------------------------------------------
 

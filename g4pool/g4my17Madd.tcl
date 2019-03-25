@@ -20,12 +20,12 @@ create_and_configure_core -core_vlnv {Actel:SgCore:HARD_MULT_ADDSUB:1.0.100} -co
 "C_IS_REGISTERED:true"  \
 "C_WIDTH:17"  \
 "CDSEL:CDINCONST"  \
-"CIN:false"  \
+"CIN:true"  \
 "FAMILY:19"  \
-"OP_FUNCTION:MULTADD"  \
+"OP_FUNCTION:MULTADDSUB"  \
 "OP_MODE:NORMAL"  \
-"OVERFLOW_COUT:NONE"  \
+"OVERFLOW_COUT:COUT"  \
 "P_IS_REGISTERED:false"  \
 "SD_EXPORT_HIDDEN_PORTS:false"  \
-"SUB_IS_REGISTERED:false"   } -inhibit_configurator 1
+"SUB_IS_REGISTERED:true"   } -inhibit_configurator 1
 # Exporting core my17Madd to TCL done
