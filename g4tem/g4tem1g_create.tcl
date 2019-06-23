@@ -2,16 +2,16 @@
 # Microsemi Tcl Script for Microsemi Libero SoC
 # (c) 2019 by Anton Mause 
 #
-# Avnet Kickstart Kit for Microsemi M2S010S-TQG144 (2015)
-# Board populated with and used as SmartFusion2 with Security+
+# Tenz TEM0001 Board for Microsemi M2S010-VFG400
+# Board populated with SmartFusion2 but used as IGLOO2.
 #
-# tested with board Rev C silicon Rev ??
+# tested with ...
 #
 
 # 
-set NAME_LINKED        rv16kick1s_lnk
-set NAME_SOURCED       rv16kick1s_src
-set PROJ_DESCRIPTION   "G4 M2GL010S Avnet KickStart rv16"
+set NAME_LINKED        rv16tem1g_lnk
+set NAME_SOURCED       rv16tem1g_src
+set PROJ_DESCRIPTION   "G4 M2GL010 Trenz TEM0001 rv16"
 set PATH_DESTINATION   "../../Lib12p1"
 set PATH_POOL          "../g4pool"
 #
@@ -39,9 +39,9 @@ puts [pwd]
 # create new project
 new_project -location $PATH_LINKED -name $NAME_LINKED -project_description $PROJ_DESCRIPTION \
 	-block_mode 0 -standalone_peripheral_initialization 0 -use_enhanced_constraint_flow 1 -hdl {VHDL} \
-	-family {SmartFusion2} -die {M2S010S} -package {144 TQ} -speed {STD} -die_voltage {1.2} \
+	-family {IGLOO2} -die {M2GL010} -package {400 VF} -speed {STD} -die_voltage {1.2} \
 	-part_range {COM} -adv_options {DSW_VCCA_VOLTAGE_RAMP_RATE:100_MS} \
-	-adv_options {IO_DEFT_STD:LVCMOS 2.5V} -adv_options {PLL_SUPPLY:PLL_SUPPLY_25} \
+	-adv_options {IO_DEFT_STD:LVCMOS 3.3V} -adv_options {PLL_SUPPLY:PLL_SUPPLY_25} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \
 	-adv_options {SYSTEM_CONTROLLER_SUSPEND_MODE:0} -adv_options {TEMPR:COM} \
 	-adv_options {VCCI_1.2_VOLTR:COM} -adv_options {VCCI_1.5_VOLTR:COM} \

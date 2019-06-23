@@ -1,0 +1,33 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG484 footprint on IMG Dev Kit
+
+# original name : ?CLK? fixed  MHz XTL oscillator
+set_io OSC_CLK    -pinname  U1     -fixed yes  -DIRECTION INPUT
+
+# USB uart original label : UART0_?XD,  ?XD_ECI of CP2105F01
+set_io UART_RXD   -pinname  C22    -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  D21    -fixed yes  -DIRECTION OUTPUT
+
+# USB uart original label : UART1_?XD,  ?XD_SCI of CP2105F01
+#set_io UART_RXD   -pinname  G18    -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname  H19    -fixed yes  -DIRECTION OUTPUT
+
+# Fixed Function dedicated IO pads for MMUART_0_?XD 
+#set_io UART0_RXD   -pinname  C22    -fixed yes  -DIRECTION INPUT
+#set_io UART0_TXD   -pinname  D21    -fixed yes  -DIRECTION OUTPUT
+
+# Fixed Function dedicated IO pads for MMUART_1_?XD 
+#set_io UART1_RXD   -pinname  G18    -fixed yes  -DIRECTION INPUT
+#set_io UART1_TXD   -pinname  H19    -fixed yes  -DIRECTION OUTPUT
+
+# original names : PB1=SW200=DDRIOB0_6, low if pressed
+# Bank0 1=6, 2=7, 3=8, 4=9
+set_io PB1        -pinname  D6    -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  B5    -fixed yes  -DIRECTION INPUT
+#set_io PB3        -pinname  C5   -fixed yes  -DIRECTION INPUT
+#set_io PB4        -pinname  A4   -fixed yes  -DIRECTION INPUT
+

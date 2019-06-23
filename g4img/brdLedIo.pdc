@@ -1,0 +1,20 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG484 footprint on IMG Dev Kit
+#
+# 6 real orange LEDs, high=active, plus 4 GPOs
+# LED0=D203=DDRIOB0_3=A6,  ..., 
+# LED6=B1_MSIO6=JP3A57, LED7=B1_MSIO7=JP3A44
+# D203, D201, D202, D200, D204, D205, 
+#   A6,   C9,   B6,   D9,   F8,   A5, 
+set_io LED0       -pinname  A6    -fixed yes
+set_io LED1       -pinname  C9    -fixed yes
+set_io LED2       -pinname  B6    -fixed yes
+set_io LED3       -pinname  D9    -fixed yes
+set_io LED4       -pinname  F8    -fixed yes
+set_io LED5       -pinname  A5    -fixed yes
+set_io LED6       -pinname  F18   -fixed yes
+set_io LED7       -pinname  E22   -fixed yes

@@ -31,7 +31,7 @@ No, I will not rewrite this core from scratch, it is just a POC as the name stat
 ###### -1x MACC  17 bit signed (alu)
 ###### -600 LE  (this is what you find around each MACC)
 
-The current snapshot is intended to use Libero SoC version 12.0 (2019q1)
+The current snapshot is intended to use Libero SoC version 12.1 (2019q2)
 
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
 Most generic HDL sources can be found in the "./vhdl/" folder.
@@ -47,12 +47,14 @@ Supported features & instructions :
 #### current implementation has I_Idle cycle, just to be sure there are no side effects between instructions
 #### pcu and instruction LSRAM can handle 16 bit wide instructions AND misaligned access
 
-Supported FPGA famlies / boards & hardware :
+Supported FPGA families / boards & hardware :
 
 #### G4 := (65nm)  SmartFusion2/IGLOO2/RTG4
 #### G5 := (28nm)  MPF/Microsemi PolarFire
 
+#### IMG SmartFusion2 Development Board in folder g4img
 #### Avnet SmartFusion2 / Igloo2 KickStart Kit in folder g4kick
+#### Trenz SmartFusion2 SFM2000 / TEM1 in folder g4tem
 #### Microsemi Polarfire Splash Kit in folder g5splash (not up to date for debug/break)
 
 ToDo / Ideas :

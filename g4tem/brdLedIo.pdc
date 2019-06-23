@@ -1,0 +1,22 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# VFG400 footprint on Trenz TEM0001 Board
+#
+
+# LEDx Naming is one off 0:7 IOs -> 1:8 Brd
+set_io LED0       -pinname  E18  -fixed yes
+set_io LED1       -pinname  R17  -fixed yes
+set_io LED2       -pinname  R18  -fixed yes
+set_io LED3       -pinname  T18  -fixed yes
+set_io LED4       -pinname  U18  -fixed yes
+set_io LED5       -pinname  R16  -fixed yes
+set_io LED6       -pinname  E1   -fixed yes
+set_io LED7       -pinname  D2   -fixed yes
+
+# additional LEDs
+# LED9  Green Power Indicator
+# LED10 USER_LED   low active  (see PB2)
+#set_io LEDU       -pinname  G17   -fixed yes

@@ -174,7 +174,7 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"50" => s_rom_dat <= x"004" & "00010" & "100" & "00010" & "0110011"; -- XOR    x2 = x2 or  x4
     when  x"54" => s_rom_dat <= x"001" & "00100" & "001" & "00100" & "0010011"; -- SLLI   x4 = x4 << 1
 --  when  x"58" => s_rom_dat <= x"0FF" & "00100" & "111" & "00100" & "0010011"; -- ANDI   x4 = x4 and $FF
-    when  x"88" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
+    when  x"58" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
     when  x"5C" => s_rom_dat <= x"FE0" & "00100" & "001" & "10001" & "1100011"; -- BNE    x4, x0, -16,
 
     -- set bit zero in rd if rs1 is lower than rs2 / #immediate

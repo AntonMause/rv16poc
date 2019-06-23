@@ -1,0 +1,4 @@
+
+Trenz TEM0001 SMF2000 Boards
+
+Device : M2S010-VFG400

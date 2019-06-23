@@ -11,7 +11,7 @@
 set NAME_LINKED        rv16splash3tse_lnk
 set NAME_SOURCED       rv16splash3tse_src
 set PROJ_DESCRIPTION   "G5 MPF300 TS ES Microsemi Splash Kit rv16"
-set PATH_DESTINATION   "../../Lib12p0"
+set PATH_DESTINATION   "../../Lib12p1"
 set PATH_POOL          "../g5pool"
 # 
 

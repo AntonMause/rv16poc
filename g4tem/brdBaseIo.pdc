@@ -1,0 +1,28 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# VFG400 footprint on Trenz TEM0001 Board
+#
+# original name : CLK12M fixed 12 MHz XTL oscillator (see FTDI)
+set_io OSC_CLK    -pinname   N16  -fixed yes  -DIRECTION INPUT
+
+# Y18/W18 Xtal Main 25 MHz
+# W17/Y17 Xtal Aux 32.768 KHz
+# N16 12MHz Osc for FTDI
+# M17 User Clock ???
+
+# DEVRST_N is a fixed pin function for all G4 devices, Btn S1->U17
+
+# USB uart original label : BDBUSx FTDI Port
+set_io UART_RXD   -pinname   C19   -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname   D18   -fixed yes  -DIRECTION OUTPUT
+
+# swap with BDBUS2 because B18 as fixed function output will not work
+set_io UART_TXD   -pinname   E17   -fixed yes  -DIRECTION OUTPUT
+
+# original names : S2=USER_BTN, missuse USER_LED pin for PB2
+set_io PB1        -pinname  B19  -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  G17  -fixed yes  -DIRECTION INPUT
+
