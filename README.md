@@ -21,8 +21,7 @@ My rv16poc routes the data and configures the MACC to make use of it.
 
 It started with straight forward signal flow ;-), but it got broken a bit later in the design cycle :-( .
 
-No, I will not rewrite this core from scratch, it is just a POC as the name states.
-
+The rv16 concept maps best on G4, G5 needs different layout, so I will focus on G4 in this branch.
 
 #### Resource utilisation :
 
@@ -50,12 +49,31 @@ Supported features & instructions :
 Supported FPGA families / boards & hardware :
 
 #### G4 := (65nm)  SmartFusion2/IGLOO2/RTG4
-#### G5 := (28nm)  MPF/Microsemi PolarFire
+#### G5 := (28nm)  MPF/Microsemi PolarFire  (not supported in master tree, check out older branch early 2019)
 
 #### IMG SmartFusion2 Development Board in folder g4img
 #### Avnet SmartFusion2 / Igloo2 KickStart Kit in folder g4kick
 #### Trenz SmartFusion2 SFM2000 / TEM1 in folder g4tem
-#### Microsemi Polarfire Splash Kit in folder g5splash (not up to date for debug/break)
+
+#### (Microsemi Polarfire Splash Kit in folder g5splash) (not supported now)
+
+Activate the project you want via "Set as Root":
+#### rv16poc to run simulation
+#### rv16soc to programm the target board
+
+Change this to use SmartDebug:
+Click "Project->Project Settings ..." -> "Design Flow"
+Set "Synthesis gate level netlist format" to "Verilog netlist"
+This will allow you to enable "Hardware Breakpont Auto Instantiation"
+Rebuid project, "Run Programm Action", start "SmartDebugDesign".
+Select "Debug FPGA Array" -> "Hierarchical View", search for "s_pcu_bra".
+Add signal to "Live Probes" list and "Assign to Channel A".
+Select "Actives Probe" and "Load..." ".\test\active_probes_saved_break.txt".
+You can now press "Read Active Probes" and see rv16 running "s_pcu_pc0".
+This reading while running may crash the application in the FPGA.
+Better use "Arm Trigger" to halt rv16 at breakpoint.
+Use "Pause", "Run", "Step", to control the FPGA.
+
 
 ToDo / Ideas :
 

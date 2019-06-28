@@ -67,6 +67,14 @@ signal s_clk, s_rst_n : std_logic;
 signal s_pcu_bra : std_logic; -- branch is without storing PC
 signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
 signal s_pcu_brk : std_logic; -- breakpoint flag
+signal s_pcu_hlt : std_logic; -- halt CPU FLAG
+
+attribute syn_keep : boolean;
+attribute syn_preserve : boolean;
+attribute syn_noprune : boolean;
+attribute syn_keep     of s_pcu_brk, s_pcu_hlt : signal is true;
+attribute syn_preserve of s_pcu_brk, s_pcu_hlt : signal is true;
+attribute syn_noprune of s_pcu_brk, s_pcu_hlt : signal is true;
 
 signal s_dec_ins : std_logic_vector(31 downto 0);  -- decoder
 signal s_dec_slt : std_logic; -- current opcode is set lower than xyz
@@ -158,7 +166,8 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"28" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
 --  when  x"2C" => s_rom_dat <= x"FE4" & "00000" & "110" & "11001" & "1100011"; -- BLTU   x0, x4, -8, last = 0
 --  when  x"2C" => s_rom_dat <= x"FE6" & "00100" & "111" & "11001" & "1100011"; -- BGEU   x4, x6, -8, last = 0
-    when  x"2C" => s_rom_dat <= x"FE4" & "00110" & "110" & "11001" & "1100011"; -- BLTU   x6, x4, -8, last =+1
+--  when  x"2C" => s_rom_dat <= x"FE4" & "00110" & "110" & "11001" & "1100011"; -- BLTU   x6, x4, -8, last =+1
+    when  x"2C" => s_rom_dat <= x"FE4" & "00110" & "110" & "11001" & "1100010"; -- BLTU   x6, x4, -8, last =+1
 
     -- rigth shift arithmeticly, so will end up at -1 (found in x5)
     when  x"30" => s_rom_dat <= x"FF0" & "00000" & "000" & "00100" & "0010011"; -- ADDI   x4 = x0 +?
@@ -214,6 +223,8 @@ branch_p : process(all)
   begin
     if (s_rst_n = '0') then
       s_pcu_bra     <= '0';
+      s_pcu_brk     <= '0';
+--      s_pcu_hlt     <= '0';
     elsif (s_clk'event and s_clk = '1') then
       case s_cur_state is
       when I_Branch =>  if s_dec_ins(6 downto 2) = "11000" then
@@ -223,8 +234,10 @@ branch_p : process(all)
                         end if;
       --when I_Update =>  s_pcu_bra <= '0';
       when I_Idle   =>  s_pcu_bra <= '0';
+--      when I_Fetch  =>  s_pcu_hlt <= '1'; -- good place to halt
       when others   =>
       end case;
+      s_pcu_brk     <= not s_dec_ins(0); -- '0';
     end if;
   end process;
 
@@ -256,13 +269,13 @@ dec32_p : process(all)
     s_mac_uns      <= '0'; -- 0=signed, 1=unsigned
     s_dat_wrt      <= '0';
     s_dec_slt      <= '0'; -- any SLT instruction in progress
-    s_pcu_brk      <= not s_dec_ins(0); -- '0';
+    s_pcu_hlt      <= '0';
 
     case s_cur_state is
     when I_Reset   =>  s_nxt_state   <= I_Init;
     when I_Init    =>  s_nxt_state   <= I_Idle;
     when I_Idle    =>  s_nxt_state   <= I_Fetch;
-    when I_Fetch   =>  s_nxt_state   <= I_Execute;
+    when I_Fetch   =>  s_nxt_state   <= I_Execute;     s_pcu_hlt      <= '1'; -- good place to halt
     when I_Branch  =>  s_nxt_state   <= I_Execute;
     when I_Execute =>  s_nxt_state   <= I_Update;
     when I_Update  =>  s_nxt_state   <= I_Idle;
@@ -352,7 +365,7 @@ dec32_p : process(all)
 
 	when RV32I_OP_SYS =>
       v_wrt     := '0';
-      s_pcu_brk <= v_ins(20); -- break
+--      s_pcu_brk <= v_ins(20); -- break
 
 	when others =>
       v_wrt     := '0';
