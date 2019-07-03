@@ -59,6 +59,7 @@ create_links \
     -convert_EDN_to_HDL 0 \
     -hdl_source {./brdConst_pkg.vhd} \
     -hdl_source $PATH_POOL/brdRstClk.vhd \
+    -hdl_source $PATH_POOL/rv16uram.vhd \
     -hdl_source {../vhdl/mySynCnt.vhd} \
     -hdl_source {../vhdl/rv16poc.vhd} \
     -hdl_source {../vhdl/rv16soc.vhd} 

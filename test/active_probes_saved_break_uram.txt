@@ -1,0 +1,30 @@
+rv16poc_0\/s_pcu_bra_Z:rv16poc_0\/s_pcu_bra:Q
+Bus rv16poc_0\/s_pcu_pc0[15:0] display_format hex
+rv16poc_0\/s_pcu_pc0[15]_net_1:rv16poc_0\/s_pcu_pc0[15]:Q
+rv16poc_0\/s_pcu_pc0[14]_net_1:rv16poc_0\/s_pcu_pc0[14]:Q
+rv16poc_0\/s_pcu_pc0[13]_net_1:rv16poc_0\/s_pcu_pc0[13]:Q
+rv16poc_0\/s_pcu_pc0[12]_net_1:rv16poc_0\/s_pcu_pc0[12]:Q
+rv16poc_0\/s_pcu_pc0[11]_net_1:rv16poc_0\/s_pcu_pc0[11]:Q
+rv16poc_0\/s_pcu_pc0[10]_net_1:rv16poc_0\/s_pcu_pc0[10]:Q
+rv16poc_0\/s_pcu_pc0[9]_net_1:rv16poc_0\/s_pcu_pc0[9]:Q
+rv16poc_0\/s_pcu_pc0[8]_net_1:rv16poc_0\/s_pcu_pc0[8]:Q
+rv16poc_0\/s_pcu_pc0[7]_net_1:rv16poc_0\/s_pcu_pc0[7]:Q
+rv16poc_0\/s_pcu_pc0[6]_net_1:rv16poc_0\/s_pcu_pc0[6]:Q
+rv16poc_0\/s_pcu_pc0[5]_net_1:rv16poc_0\/s_pcu_pc0[5]:Q
+rv16poc_0\/s_pcu_pc0[4]_net_1:rv16poc_0\/s_pcu_pc0[4]:Q
+rv16poc_0\/s_pcu_pc0[3]_net_1:rv16poc_0\/s_pcu_pc0[3]:Q
+rv16poc_0\/s_pcu_pc0[2]_net_1:rv16poc_0\/s_pcu_pc0[2]:Q
+rv16poc_0\/s_pcu_pc0[1]_net_1:rv16poc_0\/s_pcu_pc0[1]:Q
+rv16poc_0\/s_pcu_pc0[0]_net_1:rv16poc_0\/s_pcu_pc0[0]:Q
+Bus end
+Bus [] display_format hex
+Bus end
+rv16poc_0\/s_pcu_hlt:rv16poc_0\/s_cur_state[3]:Q
+Bus rv16poc_0\/s_cur_state[6:4,2:0] display_format hex
+rv16poc_0\/s_cur_state[6]_net_1:rv16poc_0\/s_cur_state[6]:Q
+rv16poc_0\/s_cur_state[5]_net_1:rv16poc_0\/s_cur_state[5]:Q
+rv16poc_0\/s_cur_state[4]_net_1:rv16poc_0\/s_cur_state[4]:Q
+rv16poc_0\/s_cur_state[2]_net_1:rv16poc_0\/s_cur_state[2]:Q
+rv16poc_0\/s_cur_state[1]_net_1:rv16poc_0\/s_cur_state[1]:Q
+rv16poc_0\/s_cur_state[0]_net_1:rv16poc_0\/s_cur_state[0]:Q
+Bus end

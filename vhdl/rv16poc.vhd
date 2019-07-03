@@ -44,6 +44,16 @@ component my17Madd is port(
         P          : out std_logic_vector(34 downto 0) );
 end component;
 
+component rv16uram is
+    port( A_DOUT : out   std_logic_vector(15 downto 0);
+          B_DOUT : out   std_logic_vector(15 downto 0);
+          C_DIN  : in    std_logic_vector(15 downto 0);
+          A_ADDR : in    std_logic_vector(4 downto 0);
+          B_ADDR : in    std_logic_vector(4 downto 0);
+          C_ADDR : in    std_logic_vector(4 downto 0);
+          CLK    : in    std_logic;
+          C_WEN  : in    std_logic);
+end component;
 ----------------------------------------------------------------------
 -- Constant declarations
 ----------------------------------------------------------------------
@@ -102,8 +112,6 @@ signal s_duo_dat0, s_duo_out0     : std_logic_vector(15 downto 0);
 signal s_duo_dat1, s_duo_out1     : std_logic_vector(15 downto 0);
 signal s_duo_wrt0, s_duo_wrt1     : std_logic;
 
-type reg_mem_type is array (31 downto 0) of std_logic_vector (15 downto 0);
-signal s_reg_mem : reg_mem_type;  -- register bank 1x In 2x Out (g4)
 signal s_reg_dat : std_logic_vector(15 downto 0);
 signal s_reg_wrt, s_reg_ext, s_reg_clr : std_logic;
 signal s_reg_rs1, s_reg_rs2 : std_logic_vector(16 downto 0);
@@ -146,13 +154,13 @@ rom_p : process(s_clk,i_rst_n)
 
 -- demo code created using : http://www.kvakil.me/venus/
 rom_tbl_p : process(s_rom_adr(7 downto 0))
-  begin                    -- Immediate  source function destination operation
+  begin                    -- Immediate  source function destination  opcode(0)=0 -> breakpoint
     case s_rom_adr(7 downto 0) is
     -- init some registers, test long constants via LUI & ADDI
     when  x"00" => s_rom_dat <= x"001" & "00000" & "000" & "00110" & "0010011"; -- ADDI   x6 = x0 +1
     when  x"04" => s_rom_dat <= x"FFF" & "00000" & "000" & "00101" & "0010011"; -- ADDI   x5 = x0 -1
     when  x"08" => s_rom_dat <= x"55555"                 & "00011" & "0110111"; -- LUI    x3 =     #20
-    when  x"0C" => s_rom_dat <= x"555" & "00011" & "000" & "00011" & "0010011"; -- ADDI   x3 = x3 +#12
+    when  x"0C" => s_rom_dat <= x"555" & "00011" & "000" & "00011" & "0010010"; -- ADDI   x3 = x3 +#12
 
     -- skip second instruction, branch back, make x2=x1, so BNE continues
     when  x"10" => s_rom_dat <= x"00800"                 & "00001" & "1101110"; -- JAL    x1 = pc +4, pc = pc +$8
@@ -166,7 +174,6 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"28" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
 --  when  x"2C" => s_rom_dat <= x"FE4" & "00000" & "110" & "11001" & "1100011"; -- BLTU   x0, x4, -8, last = 0
 --  when  x"2C" => s_rom_dat <= x"FE6" & "00100" & "111" & "11001" & "1100011"; -- BGEU   x4, x6, -8, last = 0
---  when  x"2C" => s_rom_dat <= x"FE4" & "00110" & "110" & "11001" & "1100011"; -- BLTU   x6, x4, -8, last =+1
     when  x"2C" => s_rom_dat <= x"FE4" & "00110" & "110" & "11001" & "1100010"; -- BLTU   x6, x4, -8, last =+1
 
     -- rigth shift arithmeticly, so will end up at -1 (found in x5)
@@ -184,7 +191,7 @@ rom_tbl_p : process(s_rom_adr(7 downto 0))
     when  x"54" => s_rom_dat <= x"001" & "00100" & "001" & "00100" & "0010011"; -- SLLI   x4 = x4 << 1
 --  when  x"58" => s_rom_dat <= x"0FF" & "00100" & "111" & "00100" & "0010011"; -- ANDI   x4 = x4 and $FF
     when  x"58" => s_rom_dat <= x"00401"                 & "00000" & "0100011"; -- SH     0(x0) = x4
-    when  x"5C" => s_rom_dat <= x"FE0" & "00100" & "001" & "10001" & "1100011"; -- BNE    x4, x0, -16,
+    when  x"5C" => s_rom_dat <= x"FE0" & "00100" & "001" & "10001" & "1100010"; -- BNE    x4, x0, -16,
 
     -- set bit zero in rd if rs1 is lower than rs2 / #immediate
     when  x"60" => s_rom_dat <= x"000" & "00110" & "010" & "00010" & "0010011"; -- SLTI   x2 = (+1<+0)?1:0
@@ -474,26 +481,25 @@ pcu_p : process(s_clk,s_rst_n)
           else unsigned(s_mac_out(15 downto 0)) when (s_pcu_jmp='1') 
           else s_pcu_pcx;
 
-----------------------------------------------------------------------
-
-  s_reg_dat  <= s_dat_out(15 downto 0)                   when (s_reg_ext='1') 
+--handle register file memory access----------------------------------
+  s_dec_rs1    <= s_dec_ins(19 downto 15); -- register source one
+  s_dec_rs2    <= s_dec_ins(24 downto 20); -- register source two
+  s_reg_dat    <= s_dat_out(15 downto 0)                 when (s_reg_ext='1') 
            else std_logic_vector(s_pcu_pcx(15 downto 0)) when (s_pcu_jmp='1')
            else "00000000" & "0000000" & s_mac_out(16)   when (s_dec_slt='1')
            else "00000000" & "00000000"                  when (s_reg_clr='1')
            else s_mac_out(15 downto 0);
 
-reg_p : process (s_clk)
-  begin
-    if rising_edge(s_clk) then
-      if (s_reg_wrt = '1') then
-        s_reg_mem(to_integer (unsigned(s_dec_rd))) <= s_reg_dat(15 downto 0);
-      end if;
-    end if;
-  end process;
-  s_dec_rs1              <= s_dec_ins(19 downto 15); -- register source one
-  s_dec_rs2              <= s_dec_ins(24 downto 20); -- register source two
-  s_reg_rs1(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs1)));
-  s_reg_rs2(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs2)));
+rv16uram_0 : rv16uram port map( -- g4 micro RAM
+    A_DOUT => s_reg_rs1(15 downto 0),
+    B_DOUT => s_reg_rs2(15 downto 0),
+    C_DIN  => s_reg_dat(15 downto 0),
+    A_ADDR => s_dec_rs1,
+    B_ADDR => s_dec_rs2,
+    C_ADDR => s_dec_rd,
+    CLK    => s_clk,
+    C_WEN  => s_reg_wrt );
+
   s_reg_rs1(16)          <= '0' when s_mac_uns='1' else s_reg_rs1(15);
   s_reg_rs2(16)          <= '0' when s_mac_uns='1' else s_reg_rs2(15);
 

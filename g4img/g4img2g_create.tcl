@@ -2,16 +2,16 @@
 # Microsemi Tcl Script for Microsemi Libero SoC
 # (c) 2019 by Anton Mause 
 #
-# Avnet Kickstart Kit for Microsemi M2S010S-TQG144 (2015)
-# Board populated with and used as SmartFusion2 with Security+
+# IMG Nordhausen Development Kit for Microsemi M2S025T-FGG484 (2014)
+# Board populated with SmartFusion2 but used as IGLOO2 here.
 #
-# tested with board Rev C silicon Rev ??
+# tested with ...
 #
 
 # 
-set NAME_LINKED        rv16kick1s_lnk
-set NAME_SOURCED       rv16kick1s_src
-set PROJ_DESCRIPTION   "G4 M2GL010S Avnet KickStart rv16"
+set NAME_LINKED        rv16img2g_lnk
+set NAME_SOURCED       rv16img2g_src
+set PROJ_DESCRIPTION   "G4 M2GL025 IMG DevKit rv16"
 set PATH_DESTINATION   "../../Lib12p1"
 set PATH_POOL          "../g4pool"
 #
@@ -39,7 +39,7 @@ puts [pwd]
 # create new project
 new_project -location $PATH_LINKED -name $NAME_LINKED -project_description $PROJ_DESCRIPTION \
 	-block_mode 0 -standalone_peripheral_initialization 0 -use_enhanced_constraint_flow 1 -hdl {VHDL} \
-	-family {SmartFusion2} -die {M2S010S} -package {144 TQ} -speed {STD} -die_voltage {1.2} \
+	-family {IGLOO2} -die {M2GL025} -package {484 FBGA} -speed {STD} -die_voltage {1.2} \
 	-part_range {COM} -adv_options {DSW_VCCA_VOLTAGE_RAMP_RATE:100_MS} \
 	-adv_options {IO_DEFT_STD:LVCMOS 2.5V} -adv_options {PLL_SUPPLY:PLL_SUPPLY_25} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \
