@@ -12,7 +12,7 @@
 set NAME_LINKED        rv16kick1g_lnk
 set NAME_SOURCED       rv16kick1g_src
 set PROJ_DESCRIPTION   "G4 M2GL010S Avnet KickStart rv16"
-set PATH_DESTINATION   "../../Lib12p1"
+set PATH_DESTINATION   "../../Lib12p2"
 set PATH_POOL          "../g4pool"
 #
 

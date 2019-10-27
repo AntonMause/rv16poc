@@ -12,7 +12,7 @@
 set NAME_LINKED        rv16img2s_lnk
 set NAME_SOURCED       rv16img2s_src
 set PROJ_DESCRIPTION   "G4 M2S025 IMG DevKit rv16"
-set PATH_DESTINATION   "../../Lib12p1"
+set PATH_DESTINATION   "../../Lib12p2"
 set PATH_POOL          "../g4pool"
 #
 
