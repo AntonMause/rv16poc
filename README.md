@@ -1,15 +1,19 @@
 
-# rv16poc
+# rv16poc / rv16gpo
 
  2019 by Anton Mause
 
-### rv16poc RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
+### RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
 
 Design target : Build small 16 bit CPU based on RISC-V RV32I ISA using on chip hardware resources.
 
-This CPU should act like a RV32I for all values that fit into +/-32k.
+This family of CPUs should act like a RV32I for all values that fit into +/-32k.
+
+- rv16poc : initial proof of concept, all in one single file, see vhdl folder.
+- rv16gpo : modular version using gcc/as/ld/tcl for boot rom, see rv16gpo folder.
 
 Resource oriented design, wrapped around one Multiply-Adder-Subtractor-Unit MACC.
+RV16gpo starts as small as 240 LUT4 with simple blinky running on g4 systems.
 
 See signal flow in diagram attached.
 
@@ -17,14 +21,14 @@ The MACC provides P=C+/-B*A as a hard macro and some of these are spread all ove
 
 Thought it could be clever to use this resource instead of generating a ALU from logic gates.
 
-My rv16poc routes the data and configures the MACC to make use of it.
+This rv16poc routes the data and configures the MACC to make use of it.
 
-It started with straight forward signal flow ;-), but it got broken a bit later in the design cycle :-( .
+It started with straight forward signal flow ;-), but it got broken a bit later in the design cycle :-( . Needs more muxes than I was hoping for.
 
-The rv16 concept maps best on G4, G5 needs different layout, so I will focus on G4 in this branch.
+The rv16 concept maps best on G4, G5 needs different register memory layout, so it is a bit less efficient. Dropped g5-rv15poc support, only rv16gpo used.
 
 #### Resource utilisation :
-- 1x LSRAM 18k  -> 1k x 16 bit (instruction)
+- 1x LSRAM 18k  -> 1k x 16 bit (optional used for instruction)
 - 1x URAM 1k -> 64 x 16 bit (register)(g4 optimized)
 - 1x MACC  17 bit signed (alu)
 - 600 LE  (this is what you find around each MACC)
@@ -32,38 +36,44 @@ The rv16 concept maps best on G4, G5 needs different layout, so I will focus on 
 The current snapshot is intended to use Libero SoC version 12.2 (2019q4)
 
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
-Most generic HDL sources can be found in the "./vhdl/" folder.
 
 run : Libero -> Project -> Execute Script -> xyz_create.tcl
 
 #### Supported features & instructions :
 
-- Generic : LUI, AUIPC, JAL, JALR, LH, SH,
-- ALU (Immediate & Register) : Add, Sub, Sll, Srl, Sra, Slt, Xor, Or, And
+- Generic : Lui, Auipc, Jal, Jalr, Lh, S,
+- ALU (Immediate & Register) : Add, Sub, Sll, Srl, Sra, Slt, Sltu, Xor, Or, And
 - Branch : Bne, Beq, BLE, ...
 - Missing : Fence, System, Irq, CSR, ...
 - current implementation has I_Idle cycle, just to be sure there are no side effects between instructions
-- pcu and instruction-LSRAM can handle 16 bit wide instructions AND misaligned access
 
-#### Supported FPGA families / boards & hardware :
+Beside the well known CISC and RISC processor class, there is on named MISC, for "minimalistic instruction set computer". By definition these can have up to 32 instructions, the bare rv16 supports up to 33 instructions. Instructions not used get optimized away by the synthesis tool. So it should be OK to put this CPU into the light weight MISC class. 
+
+No interrupt, status or control register support or at all, rv16 is intended to fill the gap between a hand coded state machine and a real CPU. The current design uses way more LUT elements than register and an extra dummy idle slot. It should be possible to drop to 2/3 cycle, investing a bit more register than now, maybe even enable pipelining.
+
+The rv16gpo version uses a hand optimized opcode pre-decoder (Thanx to Karnaugh), so only 2 to 3 bits from the 7 bit wide opcode are used. This saves a lot LUT elements, but will never detect unexpected instructions and obviously fail silently.
+
+#### Supported FPGA and SoC families :
 - G4 := (65nm)  SmartFusion2/IGLOO2/RTG4
-- G5 := (28nm)  MPF/Microsemi PolarFire  (not supported in master tree, check out older branch early 2019)
+- G5 := (28nm)  MPF/Microsemi PolarFire
 
 #### Supported boards :
 - g4img: IMG SmartFusion2 Development Board
 - g4kick: Avnet SmartFusion2 / Igloo2 KickStart Kit
 - g4tem: Trenz SmartFusion2 SFM2000 / TEM1
-- g5splash: Microsemi Polarfire Splash Kit (not updated lately/maybe broken)
+- g5splash: Microsemi Polarfire Splash Kit
+
+One may borrow files from the tcl4soc project to add further boards. Or modify one board file set for its needs.
 
 #### Activate the project you want via "Set as Root":
 - rv16poc: to run simulation
-- rv16soc: to programm the target board
+- rv16soc: to program the target board
 
-#### Change this to use SmartDebug:
+#### Change this to use SmartDebug in rv16poc:
 - Click "Project->Project Settings ..." -> "Design Flow"
 - Set "Synthesis gate level netlist format" to "Verilog netlist"
 - This will allow you to enable "Hardware Breakpont Auto Instantiation"
-- Rebuid project, "Run Programm Action", start "SmartDebugDesign".
+- Rebuid project, "Run Program Action", start "SmartDebugDesign".
 - Select "Debug FPGA Array" -> "Hierarchical View", search for "s_pcu_bra".
 - Add signal to "Live Probes" list and "Assign to Channel A".
 - Select "Actives Probe" and "Load..." ".\test\active_probes_saved_break.txt".

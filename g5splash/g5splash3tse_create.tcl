@@ -1,5 +1,5 @@
 #
-# Microsemi Tcl Script for libero SoC
+# Microsemi Tcl Script for Microsemi Libero SoC
 # (c) 2019 by Anton Mause 
 #
 # Microsemi Splash Kit for Microsemi MPF300TS-484ES (2018)
@@ -8,35 +8,29 @@
 #
 
 #
-set NAME_LINKED        rv16splash3tse_lnk
-set NAME_SOURCED       rv16splash3tse_src
+set BOARD_NAME         rv16splash3tse
+set NAME_BASE          _base
+set NAME_BASE          $BOARD_NAME$NAME_BASE
+#
 set PROJ_DESCRIPTION   "G5 MPF300 TS ES Microsemi Splash Kit rv16"
 set PATH_DESTINATION   "../../Lib12p2"
 set PATH_POOL          "../g5pool"
-# 
-
-set PATH_SOURCES   .
-set PATH_LINKED    $PATH_DESTINATION/$NAME_LINKED
-set PATH_IMPORTED  $PATH_DESTINATION/$NAME_SOURCED
+#
+set PATH_SOURCE   [pwd]
+set PATH_BASE      $PATH_DESTINATION/$NAME_BASE
 
 # where are we
 puts -nonewline "Sources Path  : "
-puts $PATH_SOURCES
+puts $PATH_SOURCE
 #
-puts -nonewline "Linked Path   : "
-puts $PATH_LINKED
-#
-puts -nonewline "Imported Path : "
-puts $PATH_IMPORTED
+puts -nonewline "Base Path   : "
+puts $PATH_BASE
 #
 puts -nonewline "Pool Path : "
 puts $PATH_POOL
-#
-puts -nonewline "Current Path  : "
-puts [pwd]
 
-# create new project
-new_project -location $PATH_LINKED -name $NAME_LINKED -project_description $PROJ_DESCRIPTION \
+# create new base project
+new_project -location $PATH_BASE -name $NAME_BASE -project_description $PROJ_DESCRIPTION \
 	-block_mode 0 -standalone_peripheral_initialization 0 -instantiate_in_smartdesign 1 \
 	-ondemand_build_dh 1 -use_enhanced_constraint_flow 1 -hdl {VHDL} \
 	-family {PolarFire} -die {MPF300TS_ES} -package {FCG484} -speed {-1} \
@@ -55,73 +49,52 @@ set_device -family {PolarFire} -die {MPF300TS_ES} -package {FCG484} -speed {-1} 
 	-adv_options {VCCI_1.8_VOLTR:EXT} -adv_options {VCCI_2.5_VOLTR:EXT} \
 	-adv_options {VCCI_3.3_VOLTR:EXT} -adv_options {VOLTR:IND} 
 
-# initialy link to source files, HDL and constraints
-create_links \
+# initial source files, HDL and constraints
+import_files \
     -convert_EDN_to_HDL 0 \
     -hdl_source {./brdConst_pkg.vhd} \
-    -hdl_source {../vhdl/brdRstClk.vhd} \
-    -hdl_source {../vhdl/mySynCnt.vhd} \
-    -hdl_source {../vhdl/rv16poc.vhd} \
-    -hdl_source {../vhdl/rv16soc.vhd} 
+    -hdl_source $PATH_POOL/brdRstClk.vhd \
+    -hdl_source {../vhdl/mySynCnt.vhd}
+#    -hdl_source $PATH_POOL/rv16uram.vhd \
 #
-create_links \
+import_files \
     -convert_EDN_to_HDL 0 \
     -io_pdc {./brdBaseIo.pdc} \
     -io_pdc {./brdLedIo.pdc}
 #
-create_links \
+import_files \
     -convert_EDN_to_HDL 0 \
     -sdc {./brdBaseTim.sdc} 
 
-create_links \
-    -convert_EDN_to_HDL 0 \
-    -library {} \
-    -stimulus {../test/rv16poc_tb.vhd} 
+#import_files \
+#    -convert_EDN_to_HDL 0 \
+#    -library {work} \
+#    -simulation {../test/wave.do} 
 
-import_files \
-    -convert_EDN_to_HDL 0 \
-    -library {work} \
-    -simulation {../test/wave.do} 
+# source $PATH_POOL/g5myOSC.tcl
+# source $PATH_POOL/g5myCCC.tcl
+# source $PATH_POOL/g5my17Madd.tcl
+source $PATH_POOL/PF_INIT_MONITOR_C0.tcl
 
-# import !failes! so we take generated vhd
-#import_component -file {./my17Madd.cxf} 
-
-build_design_hierarchy 
-set_root -module {rv16soc::work} 
-organize_tool_files -tool {PLACEROUTE} -input_type {constraint} -module {rv16soc::work} \
-	-file {./brdBaseIo.pdc} \
-	-file {./brdLedIo.pdc}
-organize_tool_files -tool {SYNTHESIZE} -input_type {constraint} -module {rv16soc::work} \
-    -file {./brdBaseTim.sdc} 
-
-set_root -module {rv16poc::work} 
-organize_tool_files -tool {SIM_PRESYNTH} -file {../test/rv16poc_tb.vhd} \
-	-module {rv16poc::work} -input_type {stimulus} 
-organize_tool_files -tool {SIM_POSTSYNTH} -file {../test/rv16poc_tb.vhd} \
-	-module {rv16poc::work} -input_type {stimulus} 
-
-#run_tool -name {SIM_PRESYNTH} 
-
-set_root -module {rv16soc::work} 
-save_project 
-# close_project -save 1 
-
-# save/make copy of project changing from "linked files" to "imported files"
-save_project_as -location $PATH_IMPORTED -name $NAME_SOURCED -replace_links 1 -files {all} -designer_views {all} 
 save_project 
 
 # copy project to ZIP archive
-project_archive -location $PATH_LINKED -name $NAME_SOURCED -replace_links 1 -files {all} -designer_views {all} 
-save_project 
+project_archive -location $PATH_BASE -name $NAME_BASE -replace_links 1 -files {all} -designer_views {all} 
 
-# show current/process working directory
-puts -nonewline "Current Path  : "
-puts [pwd]
+# finished base project, let's modify it   #########################################################
+
+set NAME_CONCAT .prjx
+set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
+
+#open_project -file $NAME_CONCAT -do_backup_on_convert 0
+#source ../vhdl/rv16poc_create.tcl
+
+open_project -file $NAME_CONCAT -do_backup_on_convert 0
+source ../rv16gpo/g5rv16gpo_create.tcl
+save_project 
 
 #if { $::argc > 0 } {
 #}
-#
-set_root -module {rv16poc::work} 
 #
 # ToDo :
 # could not yet TCL this :
