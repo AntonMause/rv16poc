@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------
 -- brdRstClk (for Kickstart Kit)
 ----------------------------------------------------------------------
--- (c) 2016 by Anton Mause
+-- (c) 2019 by Anton Mause
 --
 -- Board dependend reset and clock manipulation file.
 --

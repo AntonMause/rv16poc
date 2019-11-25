@@ -80,6 +80,7 @@ mySynCnt_0 : mySynCnt
 
   s_clk2 <= s_clk;     -- full speed
 --s_clk2 <= s_cnt(4);  -- fast
+--s_clk2 <= s_cnt(8);  -- mid
 --s_clk2 <= s_cnt(16); -- slow
 --s_clk2 <= s_cnt(18); -- slower
 --s_clk2 <= s_cnt(20); -- real slow

@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------
 -- brdConst_pkg (for G5 MPF Microsemi Splash Kit Board)
 ----------------------------------------------------------------------
--- (c) 2018 by Anton Mause
+-- (c) 2019 by Anton Mause
 --
 -- Package to declare board specific constants.
 --

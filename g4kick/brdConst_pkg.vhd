@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------
 -- brdConst_pkg (for G4 SF2 Avnet Kickstart Kit Board)
 ----------------------------------------------------------------------
--- (c) 2016 by Anton Mause
+-- (c) 2019 by Anton Mause
 --
 -- Package to declare board specific constants.
 --

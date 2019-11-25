@@ -2,7 +2,7 @@
 ----------------------------------------------------------------------
 -- brdRstClk (generic version)
 ----------------------------------------------------------------------
--- (c) 2016 by Anton Mause
+-- (c) 2019 by Anton Mause
 --
 -- Clone this file and put into board file folder
 --

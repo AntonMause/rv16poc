@@ -1,6 +1,6 @@
 #
 # Microsemi Tcl Script for libero SoC
-# (c) 2016 by Anton Mause 
+# (c) 2019 by Anton Mause 
 #
 # Microsemi Splash Kit for Microsemi MPF300TS-484ES (2018)
 #
