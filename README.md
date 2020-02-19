@@ -1,7 +1,7 @@
 
 # rv16poc / rv16gpo
 
- 2019 by Anton Mause
+ 2019-2020 by Anton Mause
 
 ### RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
 
@@ -33,7 +33,7 @@ The rv16 concept maps best on G4, G5 needs different register memory layout, so 
 - 1x MACC  17 bit signed (alu)
 - 600 LE  (this is what you find around each MACC)
 
-The current snapshot is intended to use Libero SoC version 12.2 (2019q4)
+The current snapshot is intended to use Libero SoC version 12.3 (2019q4)
 
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
 

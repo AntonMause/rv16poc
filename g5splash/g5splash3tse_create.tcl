@@ -7,13 +7,18 @@
 # tested with board Rev ??????
 #
 
+source ../scripts/g5config.tcl
+puts -nonewline "Targeting Libero Version:" 
+puts $LIBERO_VERSION
+
 #
-set BOARD_NAME         rv16splash3tse
-set NAME_BASE          _base
+set BOARD_NAME         g5splash3tse
+set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
 set PROJ_DESCRIPTION   "G5 MPF300 TS ES Microsemi Splash Kit rv16"
-set PATH_DESTINATION   "../../Lib12p2"
+set PATH_DESTINATION   "../.."
+set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g5pool"
 #
 set PATH_SOURCE   [pwd]

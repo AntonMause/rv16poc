@@ -8,13 +8,18 @@
 # tested with ...
 #
 
+source ../scripts/g4config.tcl
+puts -nonewline "Targeting Libero Version:" 
+puts $LIBERO_VERSION
+
 # 
-set BOARD_NAME         rv16tem1s
-set NAME_BASE          _base
+set BOARD_NAME         g4tem1s
+set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
 set PROJ_DESCRIPTION   "G4 M2S010 Trenz TEM0001 rv16"
-set PATH_DESTINATION   "../../Lib12p2"
+set PATH_DESTINATION   "../.."
+set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g4pool"
 #
 set PATH_SOURCE   [pwd]

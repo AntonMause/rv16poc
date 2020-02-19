@@ -1,7 +1,7 @@
 
 # finished base project, let's modify it   #########################################################
 
-set NAME_PROJ      _poc
+set NAME_PROJ      _rv16poc
 set NAME_PROJ      $BOARD_NAME$NAME_PROJ
 set PATH_PROJ      $PATH_DESTINATION/$NAME_PROJ
 puts -nonewline "Proj Path : "

@@ -2,7 +2,7 @@
 # file: g5rv16gpo_create.tcl   (c) 2019 by Anton Mause
 # finished base project, let's modify it   #########################################################
 
-set NAME_PROJ      _gpo
+set NAME_PROJ      _rv16gpo
 set NAME_PROJ      $BOARD_NAME$NAME_PROJ
 set PATH_PROJ      $PATH_DESTINATION/$NAME_PROJ
 puts -nonewline "Proj Path : "
@@ -32,6 +32,7 @@ file copy ../rv16gpo/rv16rom.S          $PATH_PROJ/software
 file copy ../rv16gpo/mkrv16rom.tcl      $PATH_PROJ/software
 file copy ../rv16gpo/encoding.h         $PATH_PROJ/software
 file copy ../rv16gpo/microsemi-riscv-ram.ld     $PATH_PROJ/software
+file copy ../scripts/rv64config.tcl     $PATH_PROJ/software
 
 cd $PATH_PROJ/software/
 source mkrv16rom.tcl
