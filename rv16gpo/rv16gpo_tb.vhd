@@ -20,32 +20,35 @@ end rv16gpo_tb;
 architecture behavioral of rv16gpo_tb is
 
     constant SYSCLK_PERIOD : time := 100 ns; -- 10MHZ
-    constant IALEN : natural := 10;
+    constant PLEN : natural := 6;   -- programm counter length
+    constant XLEN : natural := 16;  -- register execution length
 
     signal SYSCLK : std_logic := '0';
     signal NSYSRESET : std_logic := '0';
     signal s_irdy : std_logic;
-    signal s_iadr : std_logic_vector(IALEN-1 downto 0);
+    signal s_iadr : std_logic_vector(PLEN-1 downto 0);
     signal s_idat : std_logic_vector(31 downto 0);
-    signal s_gpi, s_gpo : std_logic_vector(15 downto 0) := (others=>'0');
+    signal s_gpi, s_gpo : std_logic_vector(XLEN-1 downto 0) := (others=>'0');
 
 component rv16rom
-generic( IALEN : natural );
+generic( PLEN : natural );
 port( i_clk : in  std_logic;
-      i_adr : in  std_logic_vector(IALEN-1 downto 0);
+      i_adr : in  std_logic_vector(PLEN-1 downto 0);
       o_dat : out std_logic_vector(31 downto 0) );
 end component;
 
     component rv16gpo
+    generic( PLEN  : natural;  -- tested 6:8:10:12
+             XLEN  : natural); -- tested 16
         port( 
             i_clk : in std_logic;
             i_rst_n : in std_logic;
-            i_gpi : in std_logic_vector(15 downto 0);
+            i_gpi : in std_logic_vector(XLEN-1 downto 0);
             i_irdy : in std_logic;
             i_idat : in std_logic_vector(31 downto 0);
             o_isel : out std_logic;
-            o_iadr : out std_logic_vector(9 downto 0);
-            o_gpo : out std_logic_vector(15 downto 0) );
+            o_iadr : out std_logic_vector(PLEN-1 downto 0);
+            o_gpo : out std_logic_vector(XLEN-1 downto 0) );
     end component;
 
 begin
@@ -68,13 +71,14 @@ begin
     SYSCLK <= not SYSCLK after (SYSCLK_PERIOD / 2.0 );
 
   rv16rom_0 : rv16rom
-    generic map( IALEN => IALEN )
+    generic map( PLEN => PLEN )
     port map ( i_clk => SYSCLK,
                i_adr => s_iadr,
                o_dat => s_idat );
 
     -- Instantiate Unit Under Test:  rv16gpo
     rv16gpo_0 : rv16gpo
+        generic map( PLEN => PLEN, XLEN => XLEN )
         port map( 
             i_clk => SYSCLK,
             i_rst_n => NSYSRESET,

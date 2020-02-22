@@ -13,7 +13,8 @@ use work.brdConst_pkg.all;
 
 ----------------------------------------------------------------------
 entity rv16soc is
-  generic( IALEN : natural := 10 );
+  generic( PLEN  : natural :=  6;  -- tested from 6 to 16(XLEN)
+           XLEN  : natural := 16); -- tested 16 only so far
   port( OSC_CLK  : in  std_logic;
         DEVRST_N : in  std_logic;
         PB1      : in  std_logic;
@@ -45,22 +46,22 @@ component mySynCnt
 end component;
 
 component rv16gpo is
-generic(IALEN : natural);
+generic(PLEN : natural; XLEN : natural);
 port( 
   i_clk     : in  std_logic;
   i_rst_n   : in  std_logic;
-  i_gpi     : in  std_logic_vector(15 downto 0);
+  i_gpi     : in  std_logic_vector(XLEN-1 downto 0);
   i_irdy    : in  std_logic; -- instruction ready
   i_idat    : in  std_logic_vector(31 downto 0);
   o_isel    : out std_logic; -- instruction select
-  o_iadr    : out std_logic_vector(IALEN-1 downto 0);
-  o_gpo     : out std_logic_vector(15 downto 0) );
+  o_iadr    : out std_logic_vector(PLEN-1 downto 0);
+  o_gpo     : out std_logic_vector(XLEN-1 downto 0) );
 end component;
 
 component rv16rom is 
-generic( IALEN : natural );
+generic( PLEN : natural );
 port( i_clk : in  std_logic;
-      i_adr : in  std_logic_vector(IALEN-1 downto 0);
+      i_adr : in  std_logic_vector(PLEN-1 downto 0);
       o_dat : out std_logic_vector(31 downto 0) );
 end component;
 
@@ -71,7 +72,7 @@ signal s_clk, s_clk2, s_rst_n : std_logic;
 signal s_pb1, s_pb2 : std_logic;
 signal s_cnt : std_logic_vector(28 downto 0);
 signal s_gpi, s_gpo : std_logic_vector(15 downto 0);
-signal s_iadr : std_logic_vector(IALEN-1 downto 0);
+signal s_iadr : std_logic_vector(PLEN-1 downto 0);
 signal s_idat : std_logic_vector(31 downto 0);
 signal s_irdy, s_isel : std_logic;
 
@@ -94,21 +95,21 @@ mySynCnt_0 : mySynCnt
     i_clk   => s_clk,
     o_q     => s_cnt );
 
---s_clk2 <= s_clk;     -- full speed
+  s_clk2 <= s_clk;     -- full speed
 --s_clk2 <= s_cnt(4);  -- fast
 --s_clk2 <= s_cnt(8);  -- mid
-  s_clk2 <= s_cnt(16); -- slow
+--s_clk2 <= s_cnt(16); -- slow
 --s_clk2 <= s_cnt(18); -- slower
 --s_clk2 <= s_cnt(20); -- real slow
 
-rv16rom0 : rv16rom 
-  generic map( IALEN => IALEN )
+rv16rom0 : rv16rom
+  generic map( PLEN => PLEN )
   port map ( i_clk => s_clk2,
              i_adr => s_iadr,
              o_dat => s_idat );
 
 rv16gpo_0 : rv16gpo 
-  generic map( IALEN => IALEN )
+  generic map( PLEN => PLEN, XLEN => XLEN )
   port map( 
     i_clk   => s_clk2,
     i_rst_n => s_rst_n,

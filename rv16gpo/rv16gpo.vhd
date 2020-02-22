@@ -8,16 +8,16 @@ use IEEE.numeric_std.all;
 
 ----------------------------------------------------------------------
 entity rv16gpo is 
-generic(IALEN : natural := 10);
+generic(PLEN : natural := 10; XLEN : natural := 16);
 port (
   i_clk     : in  std_logic;
   i_rst_n   : in  std_logic;
-  i_gpi     : in  std_logic_vector(15 downto 0);
+  i_gpi     : in  std_logic_vector(XLEN-1 downto 0);
   i_irdy    : in  std_logic; -- instruction ready
   i_idat    : in  std_logic_vector(31 downto 0);
   o_isel    : out std_logic; -- instruction select
-  o_iadr    : out std_logic_vector(IALEN-1 downto 0);
-  o_gpo     : out std_logic_vector(15 downto 0) );
+  o_iadr    : out std_logic_vector(PLEN-1 downto 0);
+  o_gpo     : out std_logic_vector(XLEN-1 downto 0) );
 end rv16gpo;
 
 ----------------------------------------------------------------------
@@ -33,9 +33,11 @@ signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
 
 signal s_dec_ins : std_logic_vector(31 downto 0);  -- decoder
 signal s_dec_slt : std_logic; -- current opcode is set lower than xyz
-signal s_dec_sgn : std_logic_vector(16 downto 0);  -- sign of immediate
+signal s_dec_sgn : std_logic_vector(32 downto 0);  -- sign of immediate
 signal s_dec_rs1, s_dec_rs2, s_dec_rd : std_logic_vector(4 downto 0);
 signal s_not_zero : std_logic;
+
+signal s_b_type, s_i_type, s_j_type, s_s_type, s_u_type : std_logic_vector(32 downto 0);
 
 signal s_log_in1, s_log_in2, s_log_out : std_logic_vector(16 downto 0);
 signal s_log_opp : std_logic_vector(2 downto 0); -- 0=byp,1=sll,2,3,4=xor,5=srl,6=or,7=and
@@ -119,6 +121,11 @@ decode_p : process(s_dec_ins)
   -- 1--x1   jalr  jal
 
   s_dec_sgn <= (others=>'1') when (s_dec_ins(31) = '1') else (others=>'0');
+  s_b_type <= s_dec_sgn(32 downto 12)& s_dec_ins(7)& s_dec_ins(30 downto 25) & s_dec_ins(11 downto 8)& '0'; -- B-Type 
+  s_i_type <= s_dec_sgn(32 downto 12)& s_dec_ins(31 downto 20);                                             -- I-Type
+  s_j_type <= s_dec_sgn(32 downto 20)& s_dec_ins(19 downto 12)& s_dec_ins(20)& s_dec_ins(30 downto 21)& '0';-- J-Type  
+  s_s_type <= s_dec_sgn(32 downto 12)& s_dec_ins(31 downto 25)& s_dec_ins(11 downto 7);                     -- S-Type
+  s_u_type <= s_dec_sgn(32)& s_dec_ins(31 downto 12)& x"000";                                               -- U-Type
  
 ----------------------------------------------------------------------
 not_zero_p : process(s_clk) -- check if destination register s_dec_ins(11 downto 7) is not zero
@@ -204,19 +211,19 @@ dec32_p : process(all)
 	case s_decode is
 	when D_Lui =>     -- rd = #Imm
       s_mac_in3 <= (others=>'0');
-      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
+      s_log_in2 <= s_u_type(32) & s_u_type(15 downto 0);
 
 	when D_Auipc =>   -- rd = pc + #Imm
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & x"000"; -- U-Type
+      s_log_in2 <= s_u_type(32) & s_u_type(15 downto 0);
 
 	when D_Jal =>     -- pc = pc + #Imm, rd = pc +4
       s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-      s_log_in2 <= v_ins(15) & v_ins(15 downto 12) & v_ins(20) & v_ins(30 downto 21) & '0'; -- J-Type
+      s_log_in2 <= s_j_type(32) & s_j_type(15 downto 0);
       s_pcu_jmp <= '1';
 
 	when D_Jalr =>    -- pc = rs1 + #Imm, rd = pc +4
-      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+      s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
       s_pcu_jmp <= '1';
 
 	when D_Bra =>  -- 
@@ -238,23 +245,23 @@ dec32_p : process(all)
        when others =>
         s_mac_sub   <= '0'; -- 0=add 1=sub (add address offset to pc)
         s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-        s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(7) & v_ins(30 downto 25) & v_ins(11 downto 8) & '0'; -- B-Type
+        s_log_in2 <= s_b_type(32) & s_b_type(15 downto 0);
       end case;
       v_wrt     := '0';
 
     when D_Load =>    -- rd = #Imm(rs1)
-      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+      s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
       s_reg_ext <= '1';
 
     when D_Store =>   -- #Imm(rs1) = rs2
       s_mac_in3 <= (others=>'0');
-      s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 25) & v_ins(11 downto 7); -- S-Type
+      s_log_in2 <= s_s_type(32) & s_s_type(15 downto 0);
       s_dat_wrt <= '1';
       v_wrt     := '0';
 
 	when D_ImmOp | D_RegOp =>
       if (v_ins(5)='0') then -- 0=Immediate 1=Register
-        s_log_in2 <= s_dec_sgn(16 downto 12) & v_ins(31 downto 20); -- I-Type
+        s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
       end if; -- else / default=rs2
       case v_fu3 is
         when "000" =>
@@ -396,7 +403,7 @@ gpo_p : process (s_clk, s_rst_n)
   end process;
 
 ----------------------------------------------------------------------
-  o_iadr    <= std_logic_vector(s_pcu_pc0(IALEN-1 downto 0));
+  o_iadr    <= std_logic_vector(s_pcu_pc0(PLEN-1 downto 0));
   s_dec_ins <= i_idat;
 
 end RTL;
