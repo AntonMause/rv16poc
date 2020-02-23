@@ -14,7 +14,7 @@ use work.brdConst_pkg.all;
 ----------------------------------------------------------------------
 entity rv16soc is
   generic( PLEN  : natural :=  6;  -- tested from 6 to 16(XLEN)
-           XLEN  : natural := 16); -- tested 16 only so far
+           XLEN  : natural := 16); -- tested from 8 to 16
   port( OSC_CLK  : in  std_logic;
         DEVRST_N : in  std_logic;
         PB1      : in  std_logic;
@@ -71,7 +71,7 @@ constant c_pbx : std_logic := BRD_BTN_POL;
 signal s_clk, s_clk2, s_rst_n : std_logic;
 signal s_pb1, s_pb2 : std_logic;
 signal s_cnt : std_logic_vector(28 downto 0);
-signal s_gpi, s_gpo : std_logic_vector(15 downto 0);
+signal s_gpi, s_gpo : std_logic_vector(XLEN-1 downto 0);
 signal s_iadr : std_logic_vector(PLEN-1 downto 0);
 signal s_idat : std_logic_vector(31 downto 0);
 signal s_irdy, s_isel : std_logic;
@@ -122,7 +122,7 @@ rv16gpo_0 : rv16gpo
 
   s_irdy  <=   s_isel; -- zero wait state
 
-  s_gpi  <= x"000" & "00" & s_pb2 & s_pb1;
+  s_gpi  <= (1=>s_pb2, 0=>s_pb1, others=>'0');
   LED0   <=  c_lex xor s_gpo(0);
   LED1   <=  c_lex xor s_gpo(1);
   LED2   <=  c_lex xor s_gpo(2);

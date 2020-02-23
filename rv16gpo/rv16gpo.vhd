@@ -26,7 +26,7 @@ architecture RTL of rv16gpo is
 ----------------------------------------------------------------------
 -- Signal declarations
 ----------------------------------------------------------------------
-signal s_pcu_pc0, s_pcu_pc4, s_pcu_pcx, s_pcu_nxt : unsigned(15 downto 0);
+signal s_pcu_pc0, s_pcu_pc4, s_pcu_pcx, s_pcu_nxt : unsigned(XLEN-1 downto 0);
 signal s_clk, s_rst_n : std_logic;
 signal s_pcu_bra : std_logic; -- branch is without storing PC
 signal s_pcu_jmp : std_logic; -- jump is with storing PC to rd
@@ -39,22 +39,22 @@ signal s_not_zero : std_logic;
 
 signal s_b_type, s_i_type, s_j_type, s_s_type, s_u_type : std_logic_vector(32 downto 0);
 
-signal s_log_in1, s_log_in2, s_log_out : std_logic_vector(16 downto 0);
+signal s_log_in1, s_log_in2, s_log_out : std_logic_vector(XLEN-0 downto 0);
 signal s_log_opp : std_logic_vector(2 downto 0); -- 0=byp,1=sll,2,3,4=xor,5=srl,6=or,7=and
 
 signal s_mac_sub, s_mac_msh, s_mac_uns : std_logic;
-signal s_mac_in1, s_mac_in2, s_mac_in3, s_mac_out : std_logic_vector(16 downto 0);
-signal s_mac_out_all : std_logic_vector(34 downto 0);
-signal s_mac_out_sgn : signed(33 downto 0);
+signal s_mac_in1, s_mac_in2, s_mac_in3, s_mac_out : std_logic_vector(XLEN-0 downto 0);
+signal s_mac_out_all : std_logic_vector((2*XLEN)+1 downto 0);
+signal s_mac_out_sgn : signed((2*XLEN)+1 downto 0);
 
 signal s_dat_wrt : std_logic; -- write to data bus (store instruction)
 
 signal s_reg_wrt, s_reg_ext, s_reg_clr : std_logic;
-signal s_reg_rs1, s_reg_rs2 : std_logic_vector(16 downto 0);
+signal s_reg_rs1, s_reg_rs2 : std_logic_vector(XLEN-0 downto 0);
 
-type reg_mem_type is array (31 downto 0) of std_logic_vector (15 downto 0);
-signal s_reg_mem : reg_mem_type := ( others=>x"6666" );
-signal s_reg_dat : std_logic_vector(15 downto 0);
+type reg_mem_type is array (31 downto 0) of std_logic_vector (XLEN-1 downto 0);
+signal s_reg_mem : reg_mem_type;
+signal s_reg_dat : std_logic_vector(XLEN-1 downto 0);
 
 type t_state is (I_Reset, I_Init, I_Idle, I_Fetch, I_Decode, I_Branch, I_Execute, I_Update);
 signal s_cur_state, s_nxt_state : t_state;
@@ -159,7 +159,7 @@ branch_p : process(all)
     elsif (s_clk'event and s_clk = '1') then
       case s_cur_state is
       when I_Branch =>  if s_dec_ins(6 downto 2) = "11000" then
-                          s_pcu_bra <= s_dec_ins(12) xor s_mac_out(16) xor s_dec_ins(14) xor '1';
+                          s_pcu_bra <= s_dec_ins(12) xor s_mac_out(XLEN-0) xor s_dec_ins(14) xor '1';
                         else
                           s_pcu_bra <= '0';
                         end if;
@@ -209,21 +209,26 @@ dec32_p : process(all)
 
 	-- Main instruction decoder #############################################
 	case s_decode is
+
 	when D_Lui =>     -- rd = #Imm
+if XLEN > 12 then
       s_mac_in3 <= (others=>'0');
-      s_log_in2 <= s_u_type(32) & s_u_type(15 downto 0);
+      s_log_in2 <= s_u_type(XLEN-1) & s_u_type(XLEN-1 downto 0);
+end if;
 
 	when D_Auipc =>   -- rd = pc + #Imm
-      s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-      s_log_in2 <= s_u_type(32) & s_u_type(15 downto 0);
+if XLEN > 12 then
+      s_mac_in3 <= std_logic(s_pcu_pc0(XLEN-1)) & std_logic_vector(s_pcu_pc0);
+      s_log_in2 <= s_u_type(XLEN-1) & s_u_type(XLEN-1 downto 0);
+end if;
 
 	when D_Jal =>     -- pc = pc + #Imm, rd = pc +4
-      s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-      s_log_in2 <= s_j_type(32) & s_j_type(15 downto 0);
+      s_mac_in3 <= std_logic(s_pcu_pc0(XLEN-1)) & std_logic_vector(s_pcu_pc0);
+      s_log_in2 <= s_j_type(XLEN-1) & s_j_type(XLEN-1 downto 0);
       s_pcu_jmp <= '1';
 
 	when D_Jalr =>    -- pc = rs1 + #Imm, rd = pc +4
-      s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
+      s_log_in2 <= s_i_type(XLEN-1) & s_i_type(XLEN-1 downto 0);
       s_pcu_jmp <= '1';
 
 	when D_Bra =>  -- 
@@ -244,24 +249,24 @@ dec32_p : process(all)
      --when I_Execute =>
        when others =>
         s_mac_sub   <= '0'; -- 0=add 1=sub (add address offset to pc)
-        s_mac_in3 <= std_logic(s_pcu_pc0(15)) & std_logic_vector(s_pcu_pc0);
-        s_log_in2 <= s_b_type(32) & s_b_type(15 downto 0);
+        s_mac_in3 <= std_logic(s_pcu_pc0(XLEN-1)) & std_logic_vector(s_pcu_pc0);
+        s_log_in2 <= s_b_type(XLEN-1) & s_b_type(XLEN-1 downto 0);
       end case;
       v_wrt     := '0';
 
     when D_Load =>    -- rd = #Imm(rs1)
-      s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
+      s_log_in2 <= s_i_type(XLEN-1) & s_i_type(XLEN-1 downto 0);
       s_reg_ext <= '1';
 
     when D_Store =>   -- #Imm(rs1) = rs2
       s_mac_in3 <= (others=>'0');
-      s_log_in2 <= s_s_type(32) & s_s_type(15 downto 0);
+      s_log_in2 <= s_s_type(XLEN-1) & s_s_type(XLEN-1 downto 0);
       s_dat_wrt <= '1';
       v_wrt     := '0';
 
 	when D_ImmOp | D_RegOp =>
       if (v_ins(5)='0') then -- 0=Immediate 1=Register
-        s_log_in2 <= s_i_type(32) & s_i_type(15 downto 0);
+        s_log_in2 <= s_i_type(XLEN-1) & s_i_type(XLEN-1 downto 0);
       end if; -- else / default=rs2
       case v_fu3 is
         when "000" =>
@@ -310,7 +315,7 @@ end process;
 ----------------------------------------------------------------------
 log_p : process(s_log_opp,s_log_in1,s_log_in2)
   variable v_pos : integer;
-  variable v_msk : std_logic_vector(16 downto 0);
+  variable v_msk : std_logic_vector(XLEN-0 downto 0);
   begin
     case s_log_opp is -- coding mostly like func3(2:0)
     when "001" => -- SLL shift left logical
@@ -320,7 +325,7 @@ log_p : process(s_log_opp,s_log_in1,s_log_in2)
       s_log_out    <= v_msk;
     when "101" => -- shift right logical SRL , arithmetic SRA / signed shift rigth
       v_msk        := (others=>'0');
-      v_pos        := 16 - to_integer(unsigned(s_log_in2(3 downto 0)));
+      v_pos        := XLEN - to_integer(unsigned(s_log_in2(3 downto 0)));
       v_msk(v_pos) := not s_log_in2(4); -- result <= NULL if (shamt > 15)
       s_log_out    <= v_msk;
 	when "100" =>  s_log_out  <= (s_log_in1 xor s_log_in2);  -- XOR
@@ -343,10 +348,10 @@ mac_p : process (s_clk)
       end if;
     end if; 
   end process;
-  s_mac_out_all <= '0' & std_logic_vector(s_mac_out_sgn);
+  s_mac_out_all <= std_logic_vector(s_mac_out_sgn);
 
-  s_mac_out  <= std_logic_vector(s_mac_out_all(16 downto 0)) when (s_mac_msh='0')
-           else std_logic_vector(s_mac_out_all(32 downto 16));
+  s_mac_out  <= std_logic_vector(s_mac_out_all(XLEN downto 0)) when (s_mac_msh='0')
+           else std_logic_vector(s_mac_out_all(2*XLEN downto XLEN));
 
 ----------------------------------------------------------------------
 pcu_p : process(s_clk,s_rst_n)
@@ -360,43 +365,43 @@ pcu_p : process(s_clk,s_rst_n)
     end if;
   end process;
   s_pcu_pc4 <=  s_pcu_pc0 +4; -- point behind 32 bit instruction
-  s_pcu_pcx <= (s_pcu_pc4 and x"03FC");
-  s_pcu_nxt <= "000000" & unsigned(s_mac_out(9 downto 0)) when (s_pcu_bra='1') 
-          else "000000" & unsigned(s_mac_out(9 downto 0)) when (s_pcu_jmp='1') 
+  s_pcu_pcx <= (PLEN-1 downto 0 => s_pcu_pc4(PLEN-1 downto 0), others=>'0');
+  s_pcu_nxt <= (PLEN-1 downto 0 => unsigned(s_mac_out(PLEN-1 downto 0)), others=>'0') when (s_pcu_bra='1') 
+          else (PLEN-1 downto 0 => unsigned(s_mac_out(PLEN-1 downto 0)), others=>'0') when (s_pcu_jmp='1') 
           else s_pcu_pcx;
 
 --handle register file memory access----------------------------------
-  s_dec_rs1    <= s_dec_ins(19 downto 15); -- register source one
-  s_dec_rs2    <= s_dec_ins(24 downto 20); -- register source two
-  s_reg_dat    <= "00000000" & "00000000"               when (s_reg_clr='1')
+  s_dec_rs1  <= s_dec_ins(19 downto 15); -- register source one
+  s_dec_rs2  <= s_dec_ins(24 downto 20); -- register source two
+  s_reg_dat  <= (others=>'0')                           when (s_reg_clr='1')
            else i_gpi                                   when (s_reg_ext='1') 
-           else "000000" & std_logic_vector(s_pcu_pcx(9 downto 2)) & "00" when (s_pcu_jmp='1')
-           else "00000000" & "0000000" & s_mac_out(16)  when (s_dec_slt='1')
-           else s_mac_out(15 downto 0);
+           else (PLEN-1 downto 0 => std_logic_vector(s_pcu_pcx(PLEN-1 downto 0)), others=>'0') when (s_pcu_jmp='1')
+           else (0 => s_mac_out(XLEN-0), others=>'0')   when (s_dec_slt='1')
+           else s_mac_out(XLEN-1 downto 0);
     
 reg_mem_p : process (s_clk)
   begin
     if rising_edge(s_clk) then
       if (s_reg_wrt = '1') then
-        s_reg_mem(to_integer (unsigned(s_dec_rd))) <= s_reg_dat(15 downto 0);
+        s_reg_mem(to_integer (unsigned(s_dec_rd))) <= s_reg_dat(XLEN-1 downto 0);
       end if;
     end if;
   end process;
-  s_reg_rs1(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs1))); -- rs1
-  s_reg_rs2(15 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs2))); -- rs2
+  s_reg_rs1(XLEN-1 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs1))); -- rs1
+  s_reg_rs2(XLEN-1 downto 0) <= s_reg_mem(to_integer (unsigned(s_dec_rs2))); -- rs2
 
-  s_reg_rs1(16)          <= '0' when s_mac_uns='1' else s_reg_rs1(15);
-  s_reg_rs2(16)          <= '0' when s_mac_uns='1' else s_reg_rs2(15);
+  s_reg_rs1(XLEN)          <= '0' when s_mac_uns='1' else s_reg_rs1(XLEN-1);
+  s_reg_rs2(XLEN)          <= '0' when s_mac_uns='1' else s_reg_rs2(XLEN-1);
   
 ----------------------------------------------------------------------
 gpo_p : process (s_clk, s_rst_n)
   begin
     if (s_rst_n = '0') then
-      o_gpo <= x"6666";
+      o_gpo <= (3 downto 0 => x"6", others=>'0');
     elsif (s_clk'event and s_clk = '1') then
       if (s_dat_wrt='1') then
         if s_cur_state = I_Update then
-            o_gpo <= s_reg_rs2(15 downto 0);
+            o_gpo <= s_reg_rs2(XLEN-1 downto 0);
         end if;
       end if;
     end if;

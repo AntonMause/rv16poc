@@ -51,3 +51,20 @@ sr1:j     main_loop
 
 # could use 1: as label and 1f as forward reference in as/gcc/ld
 # but not in this emulator : https://www.kvakil.me/venus/
+
+#   addi  t0, x0, 1  # one bit...
+    addi  t0, x0, 15 # ...or more
+    addi  t1, x0, 255
+main_loop:
+#    sh    t0, -1(x0)
+    add   t0, t0, t0
+#    sh    t0, -1(x0)
+    add   t0, t0, t0
+#    sh    t0, -1(x0)
+    xori   t0, t0, 255
+#    sh    t0, -1(x0)
+# check if shift register is empty
+	blt   t0, t1, sr1
+    addi  t0, x0, 15
+sr1:j     main_loop
+
