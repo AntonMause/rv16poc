@@ -13,7 +13,7 @@ This family of CPUs should act like a RV32I for all values that fit into +/-32k.
 - rv16gpo : modular version using gcc/as/ld/tcl for boot rom, see rv16gpo folder.
 
 Resource oriented design, wrapped around one Multiply-Adder-Subtractor-Unit MACC.
-RV16gpo starts as small as 240 LUT4 with simple blinky running on g4 systems.
+RV16gpo starts as small as 172 LUT4 with simple blinky running on g4 systems (PLEN=XLEN=6,CLK=OSC).
 
 See signal flow in diagram attached.
 
@@ -58,6 +58,7 @@ The rv16gpo version uses a hand optimized opcode pre-decoder (Thanx to Karnaugh)
 - G5 := (28nm)  MPF/Microsemi PolarFire
 
 #### Supported boards :
+- g4hello: Microchip Hello FPGA Kit
 - g4img: IMG SmartFusion2 Development Board
 - g4kick: Avnet SmartFusion2 / Igloo2 KickStart Kit
 - g4tem: Trenz SmartFusion2 SFM2000 / TEM1

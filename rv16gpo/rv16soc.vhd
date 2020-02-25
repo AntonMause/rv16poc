@@ -13,8 +13,8 @@ use work.brdConst_pkg.all;
 
 ----------------------------------------------------------------------
 entity rv16soc is
-  generic( PLEN  : natural :=  6;  -- tested from 6 to 16(XLEN)
-           XLEN  : natural := 16); -- tested from 8 to 16
+  generic( PLEN  : natural :=  6;  -- tested from 6 to 16  (PLEN<=XLEN)
+           XLEN  : natural := 16); -- tested from 6 to 16
   port( OSC_CLK  : in  std_logic;
         DEVRST_N : in  std_logic;
         PB1      : in  std_logic;
@@ -95,10 +95,10 @@ mySynCnt_0 : mySynCnt
     i_clk   => s_clk,
     o_q     => s_cnt );
 
-  s_clk2 <= s_clk;     -- full speed
+--s_clk2 <= s_clk;     -- full speed
 --s_clk2 <= s_cnt(4);  -- fast
 --s_clk2 <= s_cnt(8);  -- mid
---s_clk2 <= s_cnt(16); -- slow
+  s_clk2 <= s_cnt(16); -- slow
 --s_clk2 <= s_cnt(18); -- slower
 --s_clk2 <= s_cnt(20); -- real slow
 

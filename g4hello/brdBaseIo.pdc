@@ -1,0 +1,20 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2020 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG256 footprint on Hello FPGA Kit
+
+# original name : CLK50MHz fixed 50 MHz XTL oscillator
+set_io OSC_CLK    -pinname  N8     -fixed yes  -DIRECTION INPUT
+
+# unknown UART routing USB/PIC/ARD/... : 
+set_io UART_RXD   -pinname  H13    -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  H12    -fixed yes  -DIRECTION OUTPUT
+
+# original names : PB1=PB1_Debug, PB2=PB3_Debug, low if pressed
+set_io PB1        -pinname  K1    -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  L1    -fixed yes  -DIRECTION INPUT
+#set_io PB3        -pinname  C5   -fixed yes  -DIRECTION INPUT
+#set_io PB4        -pinname  A4   -fixed yes  -DIRECTION INPUT
+

@@ -1,0 +1,16 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2020 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG256 footprint on Hello FPGA Kit
+#
+# 3 real orange LEDs, low=active, plus 5 GPOs
+set_io LED0       -pinname  T12   -fixed yes
+set_io LED1       -pinname  T13   -fixed yes
+set_io LED2       -pinname  G13   -fixed yes
+set_io LED3       -pinname  N7    -fixed yes
+set_io LED4       -pinname  R9    -fixed yes
+set_io LED5       -pinname  P10   -fixed yes
+set_io LED6       -pinname  T8    -fixed yes
+set_io LED7       -pinname  T7    -fixed yes
