@@ -1,0 +1,41 @@
+[1:0]	[15:13]	[11:10]	RVxyz	Instruction
+C0	0		32i	c.addi4spn -> addi rd', x2, imm			
+C0	1		32f	c.fld -> fld rd', imm(rs1')			
+C0	2		32i	c.lw -> lw rd', imm(rs1')			
+C0	3		32f	c.flw -> flw rd', imm(rs1')			
+C0	4			reserved			
+C0	5		32f	c.fsd -> fsd rs2', imm(rs1')			
+C0	6		32i	c.sw -> sw rs2', imm(rs1')			
+C0	7		32f	c.fsw -> fsw rs2', imm(rs1')			
+							
+C1	0		32i	c.addi -> addi rd, rd, nzimm			
+C1	1		32i	c.jal -> jal x1, imm				see1=5
+C1	2		32i	c.li -> addi rd, x0, nzimm			
+C1	3		32i	c.lui -> lui rd, imm				see [11:7]
+C1	3		32i	c.addi16sp -> addi x2, x2, nzimm			
+C1	4	0	32i	c.srli -> srli rd, rd, shamt			
+C1	4	1	32i	c.srai -> srai rd, rd, shamt			
+C1	4	2	32i	c.andi -> andi rd, rd, imm			
+C1	4	3	32i	c.sub -> sub rd', rd', rs2'			see[12...]
+C1	4	3	32i	c.xor -> xor rd', rd', rs2'			see[12...]
+C1	4	3	32i	c.or  -> or  rd', rd', rs2'			see[12...]
+C1	4	3	32i	c.and -> and rd', rd', rs2'			see[12...]
+C1	4	3	64i	c.subw						see[12...]
+C1	4	3	64i	c.addw						see[12...]
+							
+C1	5		32i	c.j   -> jal x0, imm				see1=5
+C1	6		32i	c.beqz -> beq rs1', x0, imm			
+C1	7		32i	c.bnez -> bne rs1', x0, imm			
+							
+C2	0		32i	c.slli -> slli rd, rd, shamt			
+C2	1		32f	c.fldsp -> fld rd, imm(x2)			
+C2	2		32f	c.lwsp -> lw rd, imm(x2)			
+C2	3		32f	c.flwsp -> flw rd, imm(x2)			
+C2	4		32i	c.mv -> add rd/rs1, x0, rs2			see[12...]
+C2	4		32i	c.jr -> jalr x0, rd/rs1, 0			
+C2	4		32i	c.add -> add rd, rd, rs2			
+C2	4		32i	c.ebreak -> ebreak			
+C2	4		32i	c.jalr -> jalr x1, rs1, 0			
+C2	5		32f	c.fsdsp -> fsd rs2, imm(x2)			
+C2	6		32i	c.swsp -> sw rs2, imm(x2)			
+C2	7		32f	c.fswsp -> fsw rs2, imm(x2)			
