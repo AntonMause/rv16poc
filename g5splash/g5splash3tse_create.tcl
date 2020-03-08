@@ -59,7 +59,7 @@ import_files \
     -convert_EDN_to_HDL 0 \
     -hdl_source {./brdConst_pkg.vhd} \
     -hdl_source $PATH_POOL/brdRstClk.vhd \
-    -hdl_source {../vhdl/mySynCnt.vhd}
+    -hdl_source $PATH_POOL/mySynCnt.vhd
 #    -hdl_source $PATH_POOL/rv16uram.vhd \
 #
 import_files \
@@ -91,8 +91,8 @@ project_archive -location $PATH_BASE -name $NAME_BASE -replace_links 1 -files {a
 set NAME_CONCAT .prjx
 set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
 
-#open_project -file $NAME_CONCAT -do_backup_on_convert 0
-#source ../vhdl/rv16poc_create.tcl
+open_project -file $NAME_CONCAT -do_backup_on_convert 0
+source ../rv16poc/g5rv16poc_create.tcl
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
 source ../rv16gpo/g5rv16gpo_create.tcl

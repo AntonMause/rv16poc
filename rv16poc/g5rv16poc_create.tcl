@@ -1,5 +1,7 @@
 
-# finished base project, let's modify it   #########################################################
+# ########################################################################
+# file: g5rv16poc_create.tcl   (c) 2019 by Anton Mause
+# finished base project, let's modify it   ###############################
 
 set NAME_PROJ      _rv16poc
 set NAME_PROJ      $BOARD_NAME$NAME_PROJ
@@ -11,13 +13,13 @@ save_project_as -location $PATH_PROJ -name $NAME_PROJ -replace_links 1 -files {a
 
 import_files \
     -convert_EDN_to_HDL 0 \
-    -hdl_source {../vhdl/rv16poc.vhd} \
-    -hdl_source {../vhdl/rv16soc.vhd} 
+    -hdl_source {../rv16poc/rv16poc.vhd} \
+    -hdl_source {../rv16poc/rv16soc.vhd} 
 #
 import_files \
     -convert_EDN_to_HDL 0 \
     -library {} \
-    -stimulus {../test/rv16poc_tb.vhd} 
+    -stimulus {../rv16poc/rv16poc_tb.vhd} 
 
 import_files \
     -convert_EDN_to_HDL 0 \
