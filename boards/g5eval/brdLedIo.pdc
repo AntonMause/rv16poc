@@ -1,0 +1,19 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2020 by Anton Mause 
+# 
+# User Locked I/O settings
+# 1152 footprint on Microsemi Eval Kit
+#
+
+#set_iobank -vcci x.yz -fixed true
+
+# Naming is 4 elements off: 0->4  7->11
+set_io -port_name   LED0       -pin_name   F22  -fixed true
+set_io -port_name   LED1       -pin_name   B26  -fixed true
+set_io -port_name   LED2       -pin_name   C26  -fixed true
+set_io -port_name   LED3       -pin_name   D25  -fixed true
+set_io -port_name   LED4       -pin_name   C27  -fixed true
+set_io -port_name   LED5       -pin_name   F23  -fixed true
+set_io -port_name   LED6       -pin_name   H22  -fixed true
+set_io -port_name   LED7       -pin_name   H21  -fixed true

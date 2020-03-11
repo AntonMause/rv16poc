@@ -17,16 +17,23 @@
 # ------------------------------------------------------------------------
 _start:
 
+init:
+    addi  t0, x0, 128   # initialize shift register
+loop:
+    sh    t0, 0(x0)     # update register to gpo
+    srli  t0, t0, 1     # shift register one element rigth
+	beq   t0, x0, init  # if empty, reinitialize
+    j     loop          # loop without init
 # ------------------------------------------------------------------------
 # initialize shift register
-    addi  t0, x0, 1
-main_loop:
-    sh    t0, 0(x0)
-    slli  t0, t0, 1
-    andi  t0, t0, 255
-	bne   t0, x0, sl1
-    addi  t0, x0, 1
-sl1:j     main_loop
+#    addi  t0, x0, 1
+#main_loop:
+#    sh    t0, 0(x0)
+#    slli  t0, t0, 1
+#    andi  t0, t0, 255
+#	bne   t0, x0, sl1
+#    addi  t0, x0, 1
+#sl1:j     main_loop
 
 # ------------------------------------------------------------------------
 

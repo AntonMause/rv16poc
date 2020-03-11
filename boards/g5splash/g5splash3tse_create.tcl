@@ -7,7 +7,7 @@
 # tested with board Rev ??????
 #
 
-source ../scripts/g5config.tcl
+source ../../scripts/g5config.tcl
 puts -nonewline "Targeting Libero Version:" 
 puts $LIBERO_VERSION
 
@@ -17,7 +17,7 @@ set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
 set PROJ_DESCRIPTION   "G5 MPF300 TS ES Microsemi Splash Kit rv16"
-set PATH_DESTINATION   "../.."
+set PATH_DESTINATION   "../../.."
 set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g5pool"
 #
@@ -92,10 +92,10 @@ set NAME_CONCAT .prjx
 set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16poc/g5rv16poc_create.tcl
+source ../../rv16poc/g5rv16poc_create.tcl
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16gpo/g5rv16gpo_create.tcl
+source ../../rv16gpo/g5rv16gpo_create.tcl
 save_project 
 
 #if { $::argc > 0 } {

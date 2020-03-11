@@ -13,13 +13,13 @@ save_project_as -location $PATH_PROJ -name $NAME_PROJ -replace_links 1 -files {a
 
 import_files \
     -convert_EDN_to_HDL 0 \
-    -hdl_source {../rv16poc/rv16poc.vhd} \
-    -hdl_source {../rv16poc/rv16soc.vhd} 
+    -hdl_source {../../rv16poc/rv16poc.vhd} \
+    -hdl_source {../../rv16poc/rv16soc.vhd} 
 #
 import_files \
     -convert_EDN_to_HDL 0 \
     -library {} \
-    -stimulus {../rv16poc/rv16poc_tb.vhd} 
+    -stimulus {../../rv16poc/rv16poc_tb.vhd} 
 
 import_files \
     -convert_EDN_to_HDL 0 \
