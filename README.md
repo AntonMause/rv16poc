@@ -1,7 +1,7 @@
 
 # rv16poc / rv16gpo
 
- 2019-2020 by Anton Mause
+2019-2020 by Anton Mause
 
 ### RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
 
@@ -13,7 +13,7 @@ This family of CPUs should act like a RV32I for all values that fit into +/-32k.
 - rv16gpo : modular version using gcc/as/ld/tcl for boot rom, see rv16gpo folder.
 
 Resource oriented design, wrapped around one Multiply-Adder-Subtractor-Unit MACC.
-RV16gpo starts as small as 172 LUT4 with simple blinky running on g4 systems (PLEN=XLEN=6,CLK=OSC).
+RV16gpo starts as small as 172 LUT4 with simple blinky running (PLEN=XLEN=6,CLK=OSC).
 
 See signal flow in diagram attached.
 
@@ -23,9 +23,7 @@ Thought it could be clever to use this resource instead of generating a ALU from
 
 This rv16poc routes the data and configures the MACC to make use of it.
 
-It started with straight forward signal flow ;-), but it got broken a bit later in the design cycle :-( . Needs more muxes than I was hoping for.
-
-The rv16 concept maps best on G4, G5 needs different register memory layout, so it is a bit less efficient. Dropped g5-rv15poc support, only rv16gpo used.
+The rv16 concept maps best on G4, G5 needs different register memory layout, so it is a bit less efficient.
 
 #### Resource utilisation :
 - 1x LSRAM 18k  -> 1k x 16 bit (optional used for instruction)
@@ -53,18 +51,6 @@ No interrupt, status or control register support or at all, rv16 is intended to 
 
 The rv16gpo version uses a hand optimized opcode pre-decoder (Thanx to Karnaugh), so only 2 to 3 bits from the 7 bit wide opcode are used. This saves a lot LUT elements, but will never detect unexpected instructions and obviously fail silently.
 
-#### Supported FPGA and SoC families :
-- G4 := (65nm)  SmartFusion2/IGLOO2/RTG4
-- G5 := (28nm)  MPF/Microsemi PolarFire
-
-#### Supported boards :
-- g4hello: Microchip Hello FPGA Kit
-- g4img: IMG SmartFusion2 Development Board
-- g4kick: Avnet SmartFusion2 / Igloo2 KickStart Kit
-- g4tem: Trenz SmartFusion2 SFM2000 / TEM1
-- g5splash: Microsemi Polarfire Splash Kit
-
-One may borrow files from the tcl4soc project to add further boards. Or modify one board file set for its needs.
 
 #### Activate the project you want via "Set as Root":
 - rv16poc: to run simulation

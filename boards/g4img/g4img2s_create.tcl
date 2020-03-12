@@ -2,25 +2,26 @@
 # Microsemi Tcl Script for Microsemi Libero SoC
 # (c) 2019 by Anton Mause 
 #
-# Microsemi Hello FPGA Kit for Microsemi M2S010-VQ256 (2019)
-# Board populated with SmartFusion2 but used as IGLOO2.
+# IMG Nordhausen Development Kit for Microsemi M2S025T-FGG484 (2014)
+# Board populated with and used as SmartFusion2.
 #
-# tested with ... ??
+# tested with ...
 #
 
-source ../scripts/g4config.tcl
+source ../../scripts/g4config.tcl
 puts -nonewline "Targeting Libero Version:" 
 puts $LIBERO_VERSION
 
 # 
-set BOARD_NAME         g4hello1g
+set BOARD_NAME         g4img2s
 set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
-set PROJ_DESCRIPTION   "G4 M2GL010 Microchip Hello FPGA rv16"
-set PATH_DESTINATION   "../.."
+set PROJ_DESCRIPTION   "G4 M2S025 IMG DevKit rv16"
+set PATH_DESTINATION   "../../.."
 set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g4pool"
+
 #
 set PATH_SOURCE   [pwd]
 set PATH_BASE      $PATH_DESTINATION/$NAME_BASE
@@ -37,8 +38,8 @@ puts $PATH_POOL
 
 # create new base project
 new_project -location $PATH_BASE -name $NAME_BASE -project_description $PROJ_DESCRIPTION \
-	-block_mode 0 -standalone_peripheral_initialization 0 -hdl {VHDL} \
-	-family {IGLOO2} -die {M2GL010} -package {256 VF} -speed {STD} -die_voltage {1.2} \
+	-block_mode 0 -standalone_peripheral_initialization 0 -use_enhanced_constraint_flow 1 -hdl {VHDL} \
+	-family {SmartFusion2} -die {M2S025} -package {484 FBGA} -speed {STD} -die_voltage {1.2} \
 	-part_range {COM} -adv_options {DSW_VCCA_VOLTAGE_RAMP_RATE:100_MS} \
 	-adv_options {IO_DEFT_STD:LVCMOS 2.5V} -adv_options {PLL_SUPPLY:PLL_SUPPLY_25} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \
@@ -90,10 +91,10 @@ set NAME_CONCAT .prjx
 set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16poc/g4rv16poc_create.tcl
+source ../../rv16poc/g4rv16poc_create.tcl
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16gpo/g4rv16gpo_create.tcl
+source ../../rv16gpo/g4rv16gpo_create.tcl
 save_project 
 
 #if { $::argc > 0 } {

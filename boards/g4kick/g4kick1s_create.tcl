@@ -8,7 +8,7 @@
 # tested with board Rev C silicon Rev ??
 #
 
-source ../scripts/g4config.tcl
+source ../../scripts/g4config.tcl
 puts -nonewline "Targeting Libero Version:" 
 puts $LIBERO_VERSION
 
@@ -18,7 +18,7 @@ set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
 set PROJ_DESCRIPTION   "G4 M2S010S Avnet KickStart rv16"
-set PATH_DESTINATION   "../.."
+set PATH_DESTINATION   "../../.."
 set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g4pool"
 #
@@ -90,10 +90,10 @@ set NAME_CONCAT .prjx
 set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16poc/g4rv16poc_create.tcl
+source ../../rv16poc/g4rv16poc_create.tcl
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../rv16gpo/g4rv16gpo_create.tcl
+source ../../rv16gpo/g4rv16gpo_create.tcl
 save_project 
 
 #if { $::argc > 0 } {

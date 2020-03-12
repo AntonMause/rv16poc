@@ -13,27 +13,27 @@ save_project_as -location $PATH_PROJ -name $NAME_PROJ -replace_links 1 -files {a
 
 import_files \
     -convert_EDN_to_HDL 0 \
-    -hdl_source {../rv16gpo/rv16gpo.vhd} \
-    -hdl_source {../rv16gpo/rv16rom.vhd} \
-    -hdl_source {../rv16gpo/rv16soc.vhd} 
+    -hdl_source {../../rv16gpo/rv16gpo.vhd} \
+    -hdl_source {../../rv16gpo/rv16rom.vhd} \
+    -hdl_source {../../rv16gpo/rv16soc.vhd} 
 #
 import_files \
     -convert_EDN_to_HDL 0 \
     -library {} \
-    -stimulus {../rv16gpo/rv16gpo_tb.vhd} 
+    -stimulus {../../rv16gpo/rv16gpo_tb.vhd} 
 
 #import_files \
 #    -convert_EDN_to_HDL 0 \
-#    -sdc {../rv16gpo/g4rv16_tim.sdc} 
+#    -sdc {../../rv16gpo/g4rv16_tim.sdc} 
 
 file mkdir $PATH_PROJ/software
-file copy ../rv16gpo/rv16rom_head.vhd   $PATH_PROJ/software
-file copy ../rv16gpo/rv16rom_tail.vhd   $PATH_PROJ/software
-file copy ../rv16gpo/rv16rom.S          $PATH_PROJ/software
-file copy ../rv16gpo/mkrv16rom.tcl      $PATH_PROJ/software
-file copy ../rv16gpo/encoding.h         $PATH_PROJ/software
-file copy ../rv16gpo/microsemi-riscv-ram.ld     $PATH_PROJ/software
-file copy ../scripts/rv64config.tcl     $PATH_PROJ/software
+file copy ../../rv16gpo/rv16rom_head.vhd   $PATH_PROJ/software
+file copy ../../rv16gpo/rv16rom_tail.vhd   $PATH_PROJ/software
+file copy ../../rv16gpo/rv16rom.S          $PATH_PROJ/software
+file copy ../../rv16gpo/mkrv16rom.tcl      $PATH_PROJ/software
+file copy ../../rv16gpo/encoding.h         $PATH_PROJ/software
+file copy ../../rv16gpo/microsemi-riscv-ram.ld     $PATH_PROJ/software
+file copy ../../scripts/rv64config.tcl     $PATH_PROJ/software
 
 cd $PATH_PROJ/software/
 source mkrv16rom.tcl
