@@ -9,8 +9,8 @@ Design target : Build small 16 bit CPU based on RISC-V RV32I ISA using on chip h
 
 This family of CPUs should act like a RV32I for all values that fit into +/-32k.
 
-- rv16poc : initial proof of concept, all in one single file, see vhdl folder.
-- rv16gpo : modular version using gcc/as/ld/tcl for boot rom, see rv16gpo folder.
+- rv16poc : initial proof of concept, all in one single file.
+- rv16gpo : modular version using gcc/as/ld/tcl for boot rom.
 
 Resource oriented design, wrapped around one Multiply-Adder-Subtractor-Unit MACC.
 RV16gpo starts as small as 172 LUT4 with simple blinky running (PLEN=XLEN=6,CLK=OSC).
