@@ -8,5 +8,6 @@
 # Libero Version to expect
 #set LIBERO_VERSION    "Lib12p1"
 #set LIBERO_VERSION    "Lib12p2"
-set LIBERO_VERSION     "Lib12p3"
+#set LIBERO_VERSION    "Lib12p3"
+set LIBERO_VERSION     "Lib12p4"
 #

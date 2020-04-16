@@ -31,7 +31,7 @@ The rv16 concept maps best on G4, G5 needs different register memory layout, so 
 - 1x MACC  17 bit signed (alu)
 - 600 LE  (this is what you find around each MACC)
 
-The current snapshot is intended to use Libero SoC version 12.3 (2019q4)
+The current snapshot is intended to use Libero SoC version 12.4 (2020q2)
 
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
 
@@ -45,7 +45,7 @@ run : Libero -> Project -> Execute Script -> xyz_create.tcl
 - Missing : Fence, System, Irq, CSR, ...
 - current implementation has I_Idle cycle, just to be sure there are no side effects between instructions
 
-Beside the well known CISC and RISC processor class, there is on named MISC, for "minimalistic instruction set computer". By definition these can have up to 32 instructions, the bare rv16 supports up to 33 instructions. Instructions not used get optimized away by the synthesis tool. So it should be OK to put this CPU into the light weight MISC class. 
+Beside the well known CISC and RISC processor class, there is one named MISC, for "minimalistic instruction set computer". By definition these can have up to 32 instructions, the bare rv16 supports up to 33 instructions. Instructions not used get optimized away by the synthesis tool. So it should be OK to put this CPU into the light weight MISC class. 
 
 No interrupt, status or control register support or at all, rv16 is intended to fill the gap between a hand coded state machine and a real CPU. The current design uses way more LUT elements than register and an extra dummy idle slot. It should be possible to drop to 2/3 cycle, investing a bit more register than now, maybe even enable pipelining.
 
