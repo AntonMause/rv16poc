@@ -1,0 +1,30 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# FCG484 footprint on Microsemi MPFS Icicle Kit
+#
+
+# original name : CLK_50MHz fixed 50 MHz XTL oscillator
+set_io -port_name   OSC_CLK    -pin_name   W12   -fixed true  -DIRECTION INPUT
+
+# DEVRST_N is a fixed pin function for all G5 devices (but hidden)
+#set_io -port_name   DEVRST_N      -pin_name   H9 -fixed true  -DIRECTION INPUT
+#set_io -port_name   NRESET        -pin_name   N1 -fixed true  -DIRECTION INPUT
+#set_io -port_name   PF_USER_RESET -pin_name   N4 -fixed true  -DIRECTION INPUT
+# WatchOut : we can NOT use DEVRST, so take NRESET or PF_USER_RESET/SW2 pin instead
+#set_io -port_name   DEVRST_N      -pin_name   N1 -fixed true  -DIRECTION INPUT
+##set_io -port_name   DEVRST_N      -pin_name   N4 -fixed true  -DIRECTION INPUT
+
+# USB uart original label : RS232_?XD,  close JP11 & JP12
+set_io -port_name   UART_RXD   -pin_name  A21  -fixed true  -DIRECTION INPUT
+set_io -port_name   UART_TXD   -pin_name  B20  -fixed true  -DIRECTION OUTPUT
+
+# original names : SW3->PB1, SW4->PB2, grounded if pressed
+# L6=SW3, M7=SW4, K5=SW5, K5=SW6, all Bank4
+set_io -port_name   PB1        -pin_name   V19 -fixed true  -DIRECTION INPUT
+set_io -port_name   PB2        -pin_name   U18 -fixed true  -DIRECTION INPUT
+
+# Slide DIP Switches, Ground if closed
+# L3=DIP1, M4=DIP2, J6=DIP3, M6=DIP4

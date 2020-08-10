@@ -91,8 +91,9 @@ project_archive -location $PATH_BASE -name $NAME_BASE -replace_links 1 -files {a
 set NAME_CONCAT .prjx
 set NAME_CONCAT $PATH_BASE/$NAME_BASE$NAME_CONCAT
 
-open_project -file $NAME_CONCAT -do_backup_on_convert 0
-source ../../rv16poc/g5rv16poc_create.tcl
+#rv16poc currently broken because of g4mem
+#open_project -file $NAME_CONCAT -do_backup_on_convert 0
+#source ../../rv16poc/g5rv16poc_create.tcl
 
 open_project -file $NAME_CONCAT -do_backup_on_convert 0
 source ../../rv16gpo/g5rv16gpo_create.tcl
