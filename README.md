@@ -31,7 +31,7 @@ The rv16 concept maps best on G4, G5 needs different register memory layout, so 
 - 1x MACC  17 bit signed (alu)
 - 600 LE  (this is what you find around each MACC)
 
-The current snapshot is intended to use Libero SoC version 12.4 (2020q2)
+The current snapshot is intended to use Libero SoC version 12.4 (2020q3)
 
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
 
