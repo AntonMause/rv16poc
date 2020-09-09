@@ -14,6 +14,7 @@
 
 ### Supported G5 Polarfire boards :
 - g5eval: Microsemi Eval Kit
+- g5icicle Microsemi Icicle Kit (SoC)
 - g5splash: Microsemi Splash Kit
 
 One may borrow files from the tcl4soc project to add further boards. 
