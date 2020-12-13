@@ -10,5 +10,6 @@
 #set LIBERO_VERSION    "Lib12p2"
 #set LIBERO_VERSION    "Lib12p3"
 #set LIBERO_VERSION    "Lib12p4"
-set LIBERO_VERSION     "Lib12p5"
+#set LIBERO_VERSION    "Lib12p5"
+set LIBERO_VERSION     "Lib12p6"
 #
