@@ -9,7 +9,7 @@ entity rv16c is
 port (
   i_ins   : in  std_logic_vector(31 downto 0);
   o_ins   : out std_logic_vector(31 downto 0);
-  o_cpr   : out std_logic );
+  o_rvc   : out std_logic );
 end rv16c;
 --------------------------------------------------------------------------------
 architecture rtl of rv16c is
@@ -27,7 +27,7 @@ decode_p : process(s_ins,s_sgn12)
     --o_ins <= s_sgn12;       -- ~151 LUT4
     --o_ins <= i_ins;         -- ~149 LUT4
     --o_ins <= (others=>'0'); -- ~130 LUT4
-    o_ins <= (others=>'X');   -- ~119 LUT4
+    o_ins <= (others=>'X');   -- ~119 LUT4  ~205 LUT3
     o_ins(1 downto 0) <= (others=>'1');
     
     case s_ins(1 downto 0) is
@@ -122,7 +122,60 @@ decode_p : process(s_ins,s_sgn12)
     end case; -- ins[1:0]
   end process;
   
-  o_cpr <= '0' when s_ins(1 downto 0) = "11" else '1';
+  o_rvc <= '0' when s_ins(1 downto 0) = "11" else '1';
 
 end rtl;
 --------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-- File: rv16c_bench.vhd
+--------------------------------------------------------------------------------
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity rv16c_bench is port (
+  i_clk   : in  std_logic;
+  i_rst_n : in  std_logic;
+  i_ins   : in  std_logic_vector(31 downto 0);
+  o_ins   : out std_logic_vector(31 downto 0);
+  o_rvc   : out std_logic );
+end rv16c_bench;
+
+architecture rtl of rv16c_bench is
+
+component rv16c is port (
+  i_ins   : in  std_logic_vector(31 downto 0);
+  o_ins   : out std_logic_vector(31 downto 0);
+  o_rvc   : out std_logic );
+end component;
+
+	signal s_one, s_two : std_logic_vector(31 downto 0);
+
+begin
+
+rvc_try_p : process(i_clk,i_rst_n)
+  begin
+    if (i_rst_n = '0') then
+      s_one <= (others=>'0'); -- Input
+      o_ins <= (others=>'0'); -- Output
+    elsif (i_clk'event and i_clk = '1') then
+      s_one <= i_ins;
+      o_ins <= s_two;
+    end if;
+  end process;
+  
+rv16c_0 : rv16c port map(
+  i_ins => s_one,
+  o_ins => s_two,
+  o_rvc => o_rvc );
+  
+end rtl;
+
+--------------------------------------------------------------------------------
+-- # default G4 constrain 100 MHz, reaching 173 MHz, using 125 LUT4
+-- #create_clock -name {Clock} -period 10 -waveform {0 5 } [ get_ports { i_clk } ]
+-- # over    G4 constrain 200 MHz, reaching 228 MHz, using 163 LUT4
+-- create_clock -name {Clock} -period 5 -waveform {0 2.5 } [ get_ports { i_clk } ]
+-- # over    G4 constrain 275 MHz, reaching 235 MHz, using 185 LUT4
+-- #create_clock -name {Clock} -period 3.63636 -waveform {0 1.81818 } [ get_ports { i_clk } ]
