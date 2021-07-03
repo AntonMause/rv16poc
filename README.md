@@ -32,6 +32,9 @@ The rv16 concept maps best on G4, G5 needs different register memory layout, so 
 - 600 LE  (this is what you find around each MACC)
 
 The current snapshot is intended to use Libero SoC version 12.6 (2020q4)
+ 
+### >Done:  G4, code runs on 2021.1 too
+### >ToDo:  G5, fix issue with Library Element
 
 Edit ./scripts/g..config.tcl if you use older Libero, or even checkout older repo.
 
