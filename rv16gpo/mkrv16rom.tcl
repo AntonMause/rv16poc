@@ -5,13 +5,9 @@
 
 source rv64config.tcl
 
-#set PATH "C:\\Microsemi\\SoftConsole_v6.1\\riscv-unknown-elf-gcc\\bin\\"
-#set PREFIX "riscv64-unknown-elf-"
-
-
-set CC ${CC_PATH}${CC_PREFIX}gcc.exe
-set OC ${CC_PATH}${CC_PREFIX}objcopy.exe
-set OD ${CC_PATH}${CC_PREFIX}objdump.exe
+set CC ${CC_PATH}${CC_PREFIX}gcc${CC_POSTFIX}
+set OC ${CC_PATH}${CC_PREFIX}objcopy${CC_POSTFIX}
+set OD ${CC_PATH}${CC_PREFIX}objdump${CC_POSTFIX}
 
 puts $CC
 file delete rv16rom.o rv16rom.elf rv16rom.bin rv16rom.lst rv16rom.vhd
