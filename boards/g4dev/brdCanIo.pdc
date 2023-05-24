@@ -1,0 +1,24 @@
+# Microsemi I/O Physical Design Constraints file
+# 
+# User Locked I/O settings
+# 
+# FG896 footprint
+
+# CAN1 top DB9 connector (1-2 use MSS CAN IP)(2-3 FMC)
+# J36   near DB9 top, parallel termination 120R
+# J52   near DB9 low, connect shield to ground
+# J111  CAN_RX  V24,  rigth column, top most
+# J114  CAN_TX  AA28,  left column, top second 
+# J115  CAN_EN  AA29, rigth column, top second (0=enable)
+# (1)->Transceiver, (2)<->SF2 pad, (3)->LT->FMC
+set_io CAN_RX   -pinname   V24   -fixed yes  -DIRECTION INPUT
+set_io CAN_TX   -pinname   AA28  -fixed yes  -DIRECTION OUTPUT
+set_io CAN_EN   -pinname   AA29  -fixed yes  -DIRECTION OUTPUT
+
+# CAN2 low DB9 connector (1-2 use FPGA)(2-3 FMC)
+# J109  near DB9 top, parallel termination 120R
+# J120  near DB9 low, connect shield to ground
+# J134  CAN_RX  T26,  rigth column, low third 
+# J232  CAN_TX  U24,  rigth column, low most 
+# J131  CAN_EN  T27,  rigth column, low fourth (0=enable)
+# (1)->Transceiver, (2)<->SF2 pad, (3)->LT->FMC

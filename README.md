@@ -1,7 +1,7 @@
 
 # rv16poc / rv16gpo
 
-2019-2021 by Anton Mause
+2019-2022 by Anton Mause
 
 ### RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
 
@@ -31,14 +31,15 @@ The rv16 concept maps best on G4, G5 needs different register memory layout, so 
 - 1x MACC  17 bit signed (alu)
 - 600 LE  (this is what you find around each MACC)
 
-The current snapshot is intended to use Libero SoC version 2021.2 (2021q3)
+The current snapshot is intended to use Libero SoC version 2022.2
  
 ### >Done:  G4, code runs on 2021.2 too, first steps towards Linux support
 ### >ToDo:  G5, fix issue with Library Element
 
-Edit ./scripts/g..config.tcl if you use older Libero, or even checkout older repo.
-
 Unpack ./rv16poc-RevXYZ.zip to your projects directory and name ./rv16poc/ .
+
+Edit ./scripts/g..config.tcl if you use older Libero, or even checkout older repo.
+Adjust your installation path of Libero and SoftConsole C: vs D: and so
 
 run : Libero -> Project -> Execute Script -> xyz_create.tcl
 

@@ -17,7 +17,8 @@ set BOARD_NAME         g4kick1g
 set NAME_BASE          _rv16base
 set NAME_BASE          $BOARD_NAME$NAME_BASE
 #
-set PROJ_DESCRIPTION   "G4 M2GL010S Avnet KickStart rv16"
+#set PROJ_DESCRIPTION   "G4 M2GL010S Avnet KickStart rv16"
+set PROJ_DESCRIPTION   "G4 M2GL010 Avnet KickStart rv16"
 set PATH_DESTINATION   "../../.."
 set PATH_DESTINATION   $PATH_DESTINATION/$LIBERO_VERSION
 set PATH_POOL          "../g4pool"

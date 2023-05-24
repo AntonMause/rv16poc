@@ -1,0 +1,41 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FCG1152 footprint on Microsemi Adv Dev Kit 
+#
+
+# original name : (SingleEnded)SECLK fixed 50 MHz XTL oscillator Y5
+set_io OSC_CLK    -pinname   P1   -fixed yes  -DIRECTION INPUT
+
+# original name : (DiffEnded)DIFFCLK fixed 100 MHz XTL oscillator Y20
+#set_io OSC_CLK    -pinname   M1   -fixed yes  -DIRECTION INPUT
+
+# UART FTDI4232 mini USB =UART0_RXD, =UART0_TXD
+set_io UART_RXD   -pinname  G5    -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  H7    -fixed yes  -DIRECTION OUTPUT
+
+# UART FTDI4232 mini USB =UART0_RXD, =UART0_TXD
+#set_io UART_RXD   -pinname  G5    -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname  H7    -fixed yes  -DIRECTION OUTPUT
+
+# UART BreadBoard J350 BB_UART_RX=UART1_RXD(6), BB_UART_TXD=UART1_TXD(5)
+#set_io UART_RXD   -pinname  L10   -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname  E3    -fixed yes  -DIRECTION OUTPUT
+
+# original names : PB1=SWITCH1, PB2=SWITCH2, zero if pressed
+set_io PB1        -pinname  J25  -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  H25  -fixed yes  -DIRECTION INPUT
+#set_io PB3        -pinname  J24  -fixed yes  -DIRECTION INPUT
+#set_io PB4        -pinname  H23  -fixed yes  -DIRECTION INPUT
+
+# original names : DIP0(pin)=DIP0(brd), GND if active
+#set_io DIP0       -pinname  F25  -fixed yes  -DIRECTION INPUT
+#set_io DIP1       -pinname  G25  -fixed yes  -DIRECTION INPUT
+#set_io DIP2       -pinname  J23  -fixed yes  -DIRECTION INPUT
+#set_io DIP3       -pinname  J22  -fixed yes  -DIRECTION INPUT
+#set_io DIP4       -pinname  G27  -fixed yes  -DIRECTION INPUT
+#set_io DIP5       -pinname  H27  -fixed yes  -DIRECTION INPUT
+#set_io DIP6       -pinname  F23  -fixed yes  -DIRECTION INPUT
+#set_io DIP7       -pinname  G23  -fixed yes  -DIRECTION INPUT

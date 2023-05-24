@@ -1,0 +1,35 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG484 footprint on Microsemi Eval Kit 
+#
+# original name : 50MHZ_SECLK_WST_K1 fixed 50 MHz XTL oscillator
+set_io OSC_CLK    -pinname  K1    -fixed yes  -DIRECTION INPUT
+
+# DEVRST_N is a fixed pin function for all G4 devices
+
+# USB uart original label : UART0_?XD,  USB FT4232H PortD 
+set_io UART_RXD   -pinname  G18    -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  H19    -fixed yes  -DIRECTION OUTPUT
+
+# Fixed Function dedicated IO pads for MMUART_0_?XD 
+#set_io UART0_RXD   -pinname  C22    -fixed yes  -DIRECTION INPUT
+#set_io UART0_TXD   -pinname  D21    -fixed yes  -DIRECTION OUTPUT
+
+# Fixed Function dedicated IO pads for MMUART_1_?XD 
+#set_io UART1_RXD   -pinname  G18    -fixed yes  -DIRECTION INPUT
+#set_io UART1_TXD   -pinname  H19    -fixed yes  -DIRECTION OUTPUT
+
+# original names : PB1=SWITCH1, PB2=SWITCH2, GND if active
+set_io PB1        -pinname  L20  -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  K16  -fixed yes  -DIRECTION INPUT
+#set_io PB3        -pinname  K18  -fixed yes  -DIRECTION INPUT
+#set_io PB4        -pinname  J18  -fixed yes  -DIRECTION INPUT
+
+# original names : DIP1(pin)=DIP0(brd)=GPI17, GND if active
+#set_io DIP0       -pinname  L19  -fixed yes  -DIRECTION INPUT
+#set_io DIP1       -pinname  L18  -fixed yes  -DIRECTION INPUT
+#set_io DIP2       -pinname  K21  -fixed yes  -DIRECTION INPUT
+#set_io DIP3       -pinname  K20  -fixed yes  -DIRECTION INPUT

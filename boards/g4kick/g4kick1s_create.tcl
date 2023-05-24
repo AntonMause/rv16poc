@@ -36,9 +36,11 @@ puts -nonewline "Pool Path : "
 puts $PATH_POOL
 
 # create new base project
+#	-family {SmartFusion2} -die {M2S010} -package {144 TQ} -speed {STD} -die_voltage {1.2} <<< Silver
+#	-family {SmartFusion2} -die {M2S010S} -package {144 TQ} -speed {STD} -die_voltage {1.2} <<< Summit
 new_project -location $PATH_BASE -name $NAME_BASE -project_description $PROJ_DESCRIPTION \
 	-block_mode 0 -standalone_peripheral_initialization 0 -use_enhanced_constraint_flow 1 -hdl {VHDL} \
-	-family {SmartFusion2} -die {M2S010S} -package {144 TQ} -speed {STD} -die_voltage {1.2} \
+	-family {SmartFusion2} -die {M2S010} -package {144 TQ} -speed {STD} -die_voltage {1.2} \
 	-part_range {COM} -adv_options {DSW_VCCA_VOLTAGE_RAMP_RATE:100_MS} \
 	-adv_options {IO_DEFT_STD:LVCMOS 2.5V} -adv_options {PLL_SUPPLY:PLL_SUPPLY_25} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \

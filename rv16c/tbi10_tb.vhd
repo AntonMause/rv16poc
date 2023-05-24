@@ -19,9 +19,10 @@ architecture behavioral of tbi10_tb is
     signal s_clk10, s_clk8 : std_logic;
 
     component tbi10to4 port( 
-            i_clk : in std_logic;
-            i_rst_n : in std_logic;
-            i_dat   : in std_logic_vector(9 downto 0);
+            i_clk   : in  std_logic;
+            i_clk_d : in  std_logic;
+            i_rst_n : in  std_logic;
+            i_dat   : in  std_logic_vector(9 downto 0);
             o_clk10 : out std_logic;
             o_clk8  : out std_logic;
             o_dat   : out std_logic_vector(7 downto 0) );
@@ -72,6 +73,7 @@ begin
     -- Instantiate Unit Under Test:  tbi10to4
     tbi10to4_0 : tbi10to4 port map( 
             i_clk   => SYSCLK,
+            i_clk_d => s_clk10,
             i_rst_n => NSYSRESET,
             i_dat   => s_dati,
             o_clk10 => s_clk10,

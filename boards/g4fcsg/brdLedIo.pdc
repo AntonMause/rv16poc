@@ -1,0 +1,16 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings 
+# fcsg158 footprint on virtual Kit
+#
+# 8 virtual LEDs
+set_io LED0       -pinname  N15   -fixed yes
+set_io LED1       -pinname  M16   -fixed yes
+set_io LED2       -pinname  B6    -fixed yes
+set_io LED3       -pinname  D9    -fixed yes
+set_io LED4       -pinname  M15   -fixed yes
+set_io LED5       -pinname  A5    -fixed yes
+set_io LED6       -pinname  P16   -fixed yes
+set_io LED7       -pinname  P15   -fixed yes

@@ -1,0 +1,20 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# FCG1152 footprint on Microsemi Video Kit
+# 1=active, bank=6
+
+#set_iobank -vcci x.yz -fixed true
+
+# Naming is one off 0->1  3->4
+set_io -port_name   LED0       -pin_name   G17  -fixed true
+set_io -port_name   LED1       -pin_name   K23  -fixed true
+set_io -port_name   LED2       -pin_name   L23  -fixed true
+set_io -port_name   LED3       -pin_name   B25  -fixed true
+# misuse PF_CSI_TX_SPARE1..4    for LED4..7
+set_io -port_name   LED4       -pin_name   AN21 -fixed true
+set_io -port_name   LED5       -pin_name   AF23 -fixed true
+set_io -port_name   LED6       -pin_name   AP20 -fixed true
+set_io -port_name   LED7       -pin_name   AN19 -fixed true

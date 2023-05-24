@@ -1,3 +1,4 @@
+# !! called from g5-some-board.tcl, do not call this file alone !!
 
 # file: g5rv16gpo_create.tcl   (c) 2019 by Anton Mause
 # finished base project, let's modify it   #########################################################

@@ -1,3 +1,4 @@
+# !! called from g4-some-board.tcl, do not call this file alone !!
 
 # ########################################################################
 # file: g4rv16gpo_create.tcl   (c) 2019 by Anton Mause

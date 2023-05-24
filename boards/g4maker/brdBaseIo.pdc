@@ -1,0 +1,20 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# TQ144 footprint on Digikey Maker Board
+#
+# original name : CLK_50MHz_SF2 fixed XTL oscillator
+set_io OSC_CLK    -pinname  23   -fixed yes  -DIRECTION INPUT
+
+# DEVRST_N is a fixed pin function for all G4 devices
+
+# USB uart original label : RS232_?XD,  close JP11 & JP12
+set_io UART_RXD   -pinname   1   -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname   2   -fixed yes  -DIRECTION OUTPUT
+
+# original names : SW1, SW2, high if pressed
+set_io PB1        -pinname  143  -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  144  -fixed yes  -DIRECTION INPUT
+

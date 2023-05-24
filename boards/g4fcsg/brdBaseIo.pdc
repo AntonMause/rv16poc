@@ -1,0 +1,19 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings 
+# fcsg158 footprint on virtual Kit
+#
+
+# virtual oscillator
+set_io OSC_CLK    -pinname  C1     -fixed yes  -DIRECTION INPUT
+
+# virtual uart
+set_io UART_RXD   -pinname  D4     -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  B3     -fixed yes  -DIRECTION OUTPUT
+
+# virtual push buttons
+set_io PB1        -pinname  R16   -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  B5    -fixed yes  -DIRECTION INPUT
+

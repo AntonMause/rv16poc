@@ -1,0 +1,18 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FCG1152 footprint on Microsemi Adv Dev Kit 
+#
+# 8 real ?? LEDs, low=active
+# real name : DS0=LED0, ..., DS7=LED7
+#
+set_io LED0       -pinname  D26  -fixed yes
+set_io LED1       -pinname  F26  -fixed yes
+set_io LED2       -pinname  A27  -fixed yes
+set_io LED3       -pinname  C26  -fixed yes
+set_io LED4       -pinname  C28  -fixed yes
+set_io LED5       -pinname  B27  -fixed yes
+set_io LED6       -pinname  C27  -fixed yes
+set_io LED7       -pinname  E26  -fixed yes

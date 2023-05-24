@@ -1,8 +1,8 @@
 
 ----------------------------------------------------------------------
 -- tbi10to4    (c) 2021 by Anton Mause
---              tbi = Ten Bit Interface = 8bit data + 2bit AC scramling
---              4(8)
+--           tbi = Ten Bit Interface = 8bit data + 2bit AC scrambling
+--           4(8)= slice to feed to output (oserdes/gearbox/tranceiver)
 ----------------------------------------------------------------------
 library ieee;
 use ieee.std_logic_1164.all;
@@ -12,7 +12,7 @@ use IEEE.numeric_std.all;
 entity tbi10to4 is 
 port (
   i_clk     : in  std_logic; -- 250 MHz system output clock
---i_clk_d   : in  std_logic; -- 100 MHz data input clock
+  i_clk_d   : in  std_logic; -- 100 MHz data input clock
   i_rst_n   : in  std_logic;
   i_dat     : in  std_logic_vector(9 downto 0);
   o_clk10   : out std_logic; -- 100 MHz = clk/2.5 = tbi input clock
@@ -27,7 +27,7 @@ architecture RTL of tbi10to4 is
 -- Signal declarations
 ----------------------------------------------------------------------
 signal s_clk, s_rst_n, s_tgl, s_clk_d, s_odd_d : std_logic;
-signal s_sft_upd, f_sft_bit : std_logic;
+signal s_sft_upd, f_sft_bit, s_clk10 : std_logic;
 signal r_sft_pat, r_sft_upd : std_logic_vector(4 downto 0);
 signal s_tbi_dat, s_sft_dat : std_logic_vector(11 downto 0);
 signal s_sft_clk8 : std_logic_vector(3 downto 0);
@@ -36,6 +36,7 @@ begin
 
 ----------------------------------------------------------------------
   s_clk     <= i_clk;
+  s_clk_d   <= i_clk_d;
   s_rst_n   <= i_rst_n;
 
 ----------------------------------------------------------------------
@@ -73,9 +74,11 @@ f_sft_pat_p : process(s_clk, s_rst_n) --
     end if;
   end process;
 
-  s_clk_d <= r_sft_pat(4) or f_sft_bit;
-  o_clk10 <= s_clk_d;
-  o_clk8  <= s_sft_clk8(3);
+  s_clk10 <= r_sft_pat(4) or f_sft_bit;
+--s_clk_d <= s_clk10;
+  o_clk10 <= s_clk10;       -- 10 bit clock 
+  o_clk8  <= s_sft_clk8(3); --  8 bit clock
+--o_clk4  <= s_clk;         --  4 bit clock = system clock
 
 ----------------------------------------------------------------------
 -- - 0 1 2 3 4 5 6 7 8 9  10
@@ -116,8 +119,8 @@ sft_dat_p : process(s_clk, s_rst_n)
       end if;
     end if;
   end process;
-  o_dat <= s_sft_dat(7 downto 0); -- for 4 & 8 bit mode
---o_dat <= s_sft_dat(3 downto 0); -- bare data in 4 bit mode
+--o_dat <= s_sft_dat(7 downto 0); -- for 8 & 4 bit mode
+  o_dat <= "0000" & s_sft_dat(3 downto 0); -- force 4 lsb
 
 ----------------------------------------------------------------------
 

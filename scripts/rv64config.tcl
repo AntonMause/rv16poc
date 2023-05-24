@@ -6,8 +6,8 @@
 # point to RISC-V compiler executable
 
 # ... on Windows
-#set CC_PATH   "C:\\Microsemi\\SoftConsole_v6.1\\riscv-unknown-elf-gcc\\bin\\"
-set CC_PATH   "D:\\Microsemi\\SoftConsole_v6.3\\riscv-unknown-elf-gcc\\bin\\"
+#set CC_PATH   "C:\\Microsemi\\SoftConsole-v2021.3\\riscv-unknown-elf-gcc\\bin\\"
+set CC_PATH   "C:\\Microchip\\SoftConsole-v2022.2-RISC-V-747\\riscv-unknown-elf-gcc\\bin\\"
 set CC_POSTFIX  ".exe"
 
 # ... on Linux

@@ -1,0 +1,43 @@
+# Microsemi I/O Physical Design Constraints file
+# 
+# User Locked I/O settings
+# 
+# FG896 footprint
+
+# original name : ?CLK? fixed 50 MHz XTL oscillator
+set_io OSC_CLK    -pinname   U7   -fixed yes  -DIRECTION INPUT
+
+# UART FTDI mini USB A  JP(2-3) J129=UART1_RXD, J133=UART1_TXD
+# This configuration is used in TU0559 Libero 11.5 CAN Tutorial
+set_io UART_RXD   -pinname   R29   -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname   R24   -fixed yes  -DIRECTION OUTPUT
+
+# USB uart original label : RS232_?XD,  
+##set_io UART_RXD   -pinname   G29   -fixed yes  -DIRECTION INPUT
+##set_io UART_TXD   -pinname   H30   -fixed yes  -DIRECTION OUTPUT
+
+# UART0 => JP??(1-2) => U62(SN65HVD12D) => RS485 J221 (or to FMC)
+# J178=RS485_RE, JP199=RS485_TX, JP209=RS485_TE, JP210=RS485_RX
+#set_io UART_RXD   -pinname   L23   -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname   H27   -fixed yes  -DIRECTION OUTPUT
+#set_io UART_DTR   -pinname   J26   -fixed yes 
+#set_io UART_RTS   -pinname   M24   -fixed yes 
+
+# UART1 => JP??(1-2) => SN65C3221EPWR => RS232 DB9 (or to FMC)
+# J188=232_DIN, J195=RS232_INVAL, J197=RS232_ROUT
+#set_io UART_RXD   -pinname   G29   -fixed yes  -DIRECTION INPUT
+#set_io UART_TXD   -pinname   H30   -fixed yes  -DIRECTION OUTPUT
+#set_io UART_DCD   -pinname   H28   -fixed yes 
+
+# original names : PB1=SWITCH1, PB2=SWITCH2, zero if pressed
+set_io PB1        -pinname  W6   -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  AA1  -fixed yes  -DIRECTION INPUT
+#set_io PB3        -pinname  AA2  -fixed yes  -DIRECTION INPUT
+#set_io PB4        -pinname  AB1  -fixed yes  -DIRECTION INPUT
+#set_io PB5        -pinname  AB2  -fixed yes  -DIRECTION INPUT
+
+# original names : DIP1(pin)=DIP0(brd), GND if active
+#set_io DIP0       -pinname  R3   -fixed yes  -DIRECTION INPUT
+#set_io DIP1       -pinname  R4   -fixed yes  -DIRECTION INPUT
+#set_io DIP2       -pinname  AE2  -fixed yes  -DIRECTION INPUT
+#set_io DIP3       -pinname  AD1  -fixed yes  -DIRECTION INPUT

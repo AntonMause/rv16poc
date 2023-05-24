@@ -38,7 +38,7 @@ puts $PATH_POOL
 new_project -location $PATH_BASE -name $NAME_BASE -project_description $PROJ_DESCRIPTION \
     -block_mode 0 -standalone_peripheral_initialization 0 -instantiate_in_smartdesign 1 \
 	-ondemand_build_dh 1 -use_relative_path 0 -linked_files_root_dir_env {} -hdl {VHDL} \
-	-family {PolarFireSoC} -die {MPFS250T_ES} -package {FCVG484_Eval} -speed {STD} \
+	-family {PolarFireSoC} -die {MPFS250T_ES} -package {FCVG484} -speed {STD} \
 	-die_voltage {1.0} -part_range {EXT} -adv_options {IO_DEFT_STD:LVCMOS 1.8V} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \
 	-adv_options {SYSTEM_CONTROLLER_SUSPEND_MODE:0} -adv_options {TEMPR:EXT} \
@@ -46,7 +46,7 @@ new_project -location $PATH_BASE -name $NAME_BASE -project_description $PROJ_DES
 	-adv_options {VCCI_1.8_VOLTR:EXT} -adv_options {VCCI_2.5_VOLTR:EXT} \
 	-adv_options {VCCI_3.3_VOLTR:EXT} -adv_options {VOLTR:EXT} 
 
-set_device -family {PolarFireSoC} -die {MPFS250T_ES} -package {FCVG484_Eval} -speed {STD} \
+set_device -family {PolarFireSoC} -die {MPFS250T_ES} -package {FCVG484} -speed {STD} \
     -die_voltage {1.0} -part_range {EXT} -adv_options {IO_DEFT_STD:LVCMOS 1.8V} \
 	-adv_options {RESTRICTPROBEPINS:1} -adv_options {RESTRICTSPIPINS:0} \
 	-adv_options {SYSTEM_CONTROLLER_SUSPEND_MODE:0} -adv_options {TEMPR:EXT} \

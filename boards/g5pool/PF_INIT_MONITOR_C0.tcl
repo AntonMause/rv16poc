@@ -2,7 +2,7 @@
 # Family: PolarFire
 # Part Number: MPF300TS_ES-1FCG484E
 # Create and Configure the core component PF_INIT_MONITOR_C0
-create_and_configure_core -core_vlnv {Actel:SgCore:PF_INIT_MONITOR:2.0.203} -component_name {PF_INIT_MONITOR_C0} -params {\
+create_and_configure_core -core_vlnv {Actel:SgCore:PF_INIT_MONITOR:2.0.307} -component_name {PF_INIT_MONITOR_C0} -params {\
 "BANK_0_CALIB_STATUS_ENABLED:false"  \
 "BANK_0_CALIB_STATUS_SIMULATION_DELAY:1"  \
 "BANK_0_RECALIBRATION_ENABLED:false"  \
@@ -39,7 +39,10 @@ create_and_configure_core -core_vlnv {Actel:SgCore:PF_INIT_MONITOR:2.0.203} -com
 "BANK_7_VDDI_STATUS_ENABLED:false"  \
 "BANK_7_VDDI_STATUS_SIMULATION_DELAY:1"  \
 "DEVICE_INIT_DONE_SIMULATION_DELAY:7"  \
+"FABRIC_DELAY_INCR:3"  \
 "FABRIC_POR_N_SIMULATION_DELAY:1"  \
+"LATCH_SC_OUTPUTS:false"  \
+"PCIE_DELAY_INCR:2"  \
 "PCIE_INIT_DONE_SIMULATION_DELAY:4"  \
 "SHOW_BANK_0_CALIB_STATUS_ENABLED:true"  \
 "SHOW_BANK_0_RECALIBRATION_ENABLED:true"  \
@@ -62,6 +65,8 @@ create_and_configure_core -core_vlnv {Actel:SgCore:PF_INIT_MONITOR:2.0.203} -com
 "SHOW_BANK_7_CALIB_STATUS_ENABLED:false"  \
 "SHOW_BANK_7_RECALIBRATION_ENABLED:false"  \
 "SHOW_BANK_7_VDDI_STATUS_ENABLED:false"  \
+"SRAM_DELAY_INCR:3"  \
 "SRAM_INIT_DONE_SIMULATION_DELAY:6"  \
+"URAM_DELAY_INCR:3"  \
 "USRAM_INIT_DONE_SIMULATION_DELAY:5"   }
 # Exporting Component Description of PF_INIT_MONITOR_C0 to TCL done

@@ -1,6 +1,6 @@
 # Exporting core g4uram to TCL
 # Exporting Create design command for core g4uram
-create_and_configure_core -core_vlnv {Actel:SgCore:URAM:1.0.101} -component_name {g4uram} -params {\
+create_and_configure_core -core_vlnv {Actel:SgCore:URAM:1.0.102} -component_name {g4uram} -params {\
 "A_ADDR_ARST_PN:A_ADDR_ARST_N"  \
 "A_ADDR_ARST_POLARITY:2"  \
 "A_ADDR_CLK_EDGE:RISE"  \

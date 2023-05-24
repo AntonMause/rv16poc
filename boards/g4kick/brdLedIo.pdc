@@ -16,3 +16,14 @@ set_io LED4       -pinname  141  -fixed yes
 set_io LED5       -pinname  137  -fixed yes
 set_io LED6       -pinname  136  -fixed yes
 set_io LED7       -pinname  135  -fixed yes
+
+# sort by color 4x red  + 4x green
+# LED0=GPIO8, LED4=GPIO4, LED5=GPIO5, ...
+#set_io LED0       -pinname  130  -fixed yes
+#set_io LED1       -pinname  134  -fixed yes
+#set_io LED2       -pinname  141  -fixed yes
+#set_io LED3       -pinname  136  -fixed yes
+#set_io LED4       -pinname  129  -fixed yes
+#set_io LED5       -pinname  131  -fixed yes
+#set_io LED6       -pinname  137  -fixed yes
+#set_io LED7       -pinname  135  -fixed yes

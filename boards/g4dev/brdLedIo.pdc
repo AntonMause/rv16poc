@@ -1,0 +1,15 @@
+# Microsemi I/O Physical Design Constraints file
+# 
+# User Locked I/O settings
+# 
+# FG896 footprint
+
+# 8 real green LEDs, high=active
+set_io LED0       -pinname  A18  -fixed yes
+set_io LED1       -pinname  B18  -fixed yes
+set_io LED2       -pinname  D18  -fixed yes
+set_io LED3       -pinname  E18  -fixed yes
+set_io LED4       -pinname  A20  -fixed yes
+set_io LED5       -pinname  D20  -fixed yes
+set_io LED6       -pinname  E20  -fixed yes
+set_io LED7       -pinname  B20  -fixed yes

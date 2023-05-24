@@ -348,13 +348,13 @@ dec32_p : process(all)
       case v_fu3 is
         when "000" =>
           if (v_ins(5) = '1') then -- 0=Immediate 1=Register
-            s_mac_sub <= v_ins(30); -- 0=add 1=sub
+            s_mac_sub <= v_ins(30); -- 0=add 1=sub (W*see-rv64)
           end if;
         when "010" | "011" => -- SLT / SLTI / SLTU / SLTIU
           s_mac_sub   <= '1'; -- 0=add 1=sub (subtract to compare)
           s_mac_uns   <= v_fu3(0); 
           s_dec_slt   <= '1';
-        when "001" | "101" => -- shift left / shift right
+        when "001" | "101" => -- shift left / shift right (W*see-rv64)
           s_mac_in1 <= s_reg_rs1;
           s_mac_in3 <= (others=>'0');
           s_log_opp <= v_fu3(2 downto 0);

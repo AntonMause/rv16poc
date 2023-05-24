@@ -1,0 +1,18 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2016 by Anton Mause 
+# 
+# User Locked I/O settings 
+# FG484 footprint on Microsemi Eval Kit 
+#
+# 8 real LEDs, low=active, VCC=3v3 
+# 0+1=Yellow, 2+3=Green, 4+5=Red, 6+7=Blue 
+# 
+set_io LED0      -pinname  E1  -fixed yes 
+set_io LED1      -pinname  F4  -fixed yes 
+set_io LED2      -pinname  F3  -fixed yes 
+set_io LED3      -pinname  G7  -fixed yes 
+set_io LED4      -pinname  H7  -fixed yes 
+set_io LED5      -pinname  J6  -fixed yes 
+set_io LED6      -pinname  H6  -fixed yes 
+set_io LED7      -pinname  H5  -fixed yes 

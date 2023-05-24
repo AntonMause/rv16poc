@@ -1,0 +1,18 @@
+#
+# Microsemi I/O Physical Design Constraints file 
+# (c) 2019 by Anton Mause 
+# 
+# User Locked I/O settings
+# TQ144 footprint on Digikey Maker Board
+#
+
+# 8 real LEDs
+#
+set_io LED0       -pinname  117  -fixed yes
+set_io LED1       -pinname  118  -fixed yes
+set_io LED2       -pinname  122  -fixed yes
+set_io LED3       -pinname  123  -fixed yes
+set_io LED4       -pinname  124  -fixed yes
+set_io LED5       -pinname  125  -fixed yes
+set_io LED6       -pinname  128  -fixed yes
+set_io LED7       -pinname  129  -fixed yes
