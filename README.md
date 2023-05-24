@@ -1,7 +1,7 @@
 
 # rv16poc / rv16gpo
 
-2019-2022 by Anton Mause
+2019-2023 by Anton Mause
 
 ### RISC-V Proof of Concept on Actel/Microsemi/Microchip SoC
 
