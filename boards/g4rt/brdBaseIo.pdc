@@ -1,0 +1,21 @@
+# Microsemi I/O Physical Design Constraints file
+# 
+# User Locked I/O settings
+# 
+# CG1657 footprint
+
+# original name : ?CLK? fixed 50 MHz XTL oscillator
+set_io OSC_CLK    -pinname  AA39   -fixed yes  -DIRECTION INPUT
+
+# USB uart original label : USB=J47, FT4232 CD, UART0_?XD,
+set_io UART_RXD   -pinname  E27    -fixed yes  -DIRECTION INPUT
+set_io UART_TXD   -pinname  E28    -fixed yes  -DIRECTION OUTPUT
+
+# USB I2C : USB=J47, FT4232 BD, 
+#set_io I2C_SCL    -pinname  G30    -fixed yes
+#set_io I2C_SDA    -pinname  G31    -fixed yes
+
+# original names : PB1=PB_SW1, ??? if pressed
+set_io PB1        -pinname  AA30   -fixed yes  -DIRECTION INPUT
+set_io PB2        -pinname  AB31   -fixed yes  -DIRECTION INPUT
+

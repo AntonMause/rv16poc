@@ -1,0 +1,14 @@
+# Microsemi I/O Physical Design Constraints file
+# 
+# User Locked I/O settings
+# 
+# CG1657 footprint
+
+set_io LED0       -pinname  W35   -fixed yes
+set_io LED1       -pinname  W34   -fixed yes
+set_io LED2       -pinname  V30   -fixed yes
+set_io LED3       -pinname  W33   -fixed yes
+set_io LED4       -pinname  T33   -fixed yes
+set_io LED5       -pinname  U35   -fixed yes
+set_io LED6       -pinname  R36   -fixed yes
+set_io LED7       -pinname  T34   -fixed yes

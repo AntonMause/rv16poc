@@ -6,6 +6,7 @@
 #
 
 # Libero Version to expect
-#set LIBERO_VERSION     "Lib22p2"
-set LIBERO_VERSION     "Lib23p1"
+#set LIBERO_VERSION     "Lib23p1"
+#set LIBERO_VERSION     "Lib23p2"
+set LIBERO_VERSION     "Lib24p1"
 #
