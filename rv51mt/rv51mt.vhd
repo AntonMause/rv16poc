@@ -72,13 +72,13 @@ signal s_pcu_val_rd0, s_pcu_val_wr0 : std_logic_vector(31 downto 0) := (OTHERS=>
 signal s_pcu_val_rd1, s_pcu_val_rd2 : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
 
 -- signal for instruction fetch unit -----------------------------------------------
-signal s2_rd0, s2_rdw, s3_rdw                           : std_logic;
+signal s2_no0, s2_rdw, s3_rdw                           : std_logic;
 signal s2_rs1, s2_rs2, s2_rd, s3_rs1, s3_rs2, s3_rd     : std_logic_vector(4 downto 0);
 signal s3_rg1, s3_rg2, s3_imm, s3_rx2, s3_alu           : std_logic_vector(XLEN-1 downto 0);
 
 ----------------------------------------------------------------------
 signal s1_tid, s2_tid, s3_tid, s4_tid, n1_tid : std_logic_vector(3 downto 0) := (OTHERS=>'0');
-signal s1_pc0i,s1_pc0, s2_pc0, s2_pc4, s3_pc0, s3_pc4, s3_pcx, s4_pc4 : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
+signal s1_pc0i,s1_pc0, s2_pc0, s2_pc4, s3_pc0, s3_pc4, s3_pcx : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
 signal n0_pc0, n1_pc4, n2_pc0, n2_pc4, n3_pc4 : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
 signal s2_insi,s2_ins, s2_dec, s3_ins, s3_dec : std_logic_vector(31 downto 0) := (OTHERS=>'0');
 signal s2_dex : t_decode;
@@ -92,7 +92,9 @@ signal s2_one, s3_one : std_logic_vector(XLEN-1 downto 0); -- alu results
 -- pra, prd, dra, drd, dwa, dwd,    programm / data / register,  read/write,  addres/data/select
 signal s_pwa, s_pra, s_dra, s_dwa, s_rwa, s_rra1, s_rra2 : std_logic_vector(31 downto 0) := (OTHERS=>'0'); -- address
 signal s_pwd, s_prd, s_drd, s_dwd, s_rwd, s_rrd1, s_rrd2 : std_logic_vector(31 downto 0) := (OTHERS=>'0'); -- data
-signal s_pws, s_prs, s_drs, s_dws : std_logic := '0';                               -- select
+signal s_pws, s_prs, s_drs, s_dwe : std_logic := '0';                               -- select
+signal s_dws : std_logic_vector( 3 downto 0); -- data write byte select
+signal s_dwl : std_logic_vector(15 downto 0); -- data write lane select
 
 begin
 
@@ -183,7 +185,6 @@ ctl_p : process(s_clk,s_rst_n)
       s3_rd        <=  (OTHERS=>'0');
       s3_rdw       <=  '0';
       s3_one       <=  (OTHERS=>'0');
-      s4_pc4       <=  (OTHERS=>'0');
     elsif rising_edge(s_clk) then  -- t0 schedule
       s1_tid       <=  n1_tid;     -- t1 get pc
       s2_tid       <=  s1_tid;     -- t2 fetch ins
@@ -199,7 +200,6 @@ ctl_p : process(s_clk,s_rst_n)
       s3_rdw       <=  s2_rdw;
       s3_one       <=  s2_one;
       s4_tid       <=  s3_tid;     -- t4 execute
-      s4_pc4       <=  s3_pc4;
     end if;
   end process;                     -- t5 write
 
@@ -208,20 +208,19 @@ ctl_p : process(s_clk,s_rst_n)
 rv16dec_0 : rv16dec port map( i_ins => s2_ins, o_dec => s2_dec );
 
 s2_pc0x <= x"0000" & s2_pc0;
+-- early results for jal, jalr, lui, auipc (no register read required)
 rv16one_0 : rv16one port map( i_ins => s2_ins, i_pc0 => s2_pc0x, o_alu => s2_one); 
--- early results for jal, jalr, lui, auipc (no registers required)
 
   s2_rd   <= s2_ins(11 downto  7); -- register destination
-  s2_rd0  <= '0' when(s2_rd = "00000") else '1'; -- destination not zero
+  s2_no0  <= '0' when(s2_rd = "00000") else '1'; -- destination register is not x0/zero
   s2_rs1  <= s2_ins(19 downto 15); -- register source one
   s2_rs2  <= s2_ins(24 downto 20); -- register source two
-  s2_rdw  <= s1_tid(3) and s2_rd0 and s2_dec(t_decode'pos(D_Upd)); -- merged bits on decoder  << todo: adjust s1_ <> s2_
+  s2_rdw  <= s1_tid(3) and s2_no0 and s2_dec(t_decode'pos(D_Upd)); -- merged bits on decoder  << todo: adjust s1_ <> s2_
 
 ----------------------------------------------------------------------
 -- t3: (final) decode and get register
   s3_pc0x <= x"0000" & s3_pc0;
---s3_dat  <= x"0000" & s4_pc4;
-  s3_dat  <= s3_one;  -- fast result from operations without registers involved #imm only
+  s3_dat  <= s3_one;  -- fast result from operations without registers, involves #imm / pc4 only
   s_rwd   <= s_drd  when  (s3_dec(t_decode'pos(D_Load  )) = '1') -- reg <= load or any other ALU opp
         else s3_alu when ((s3_dec(t_decode'pos(D_ImmOp )) = '1') or (s3_dec(t_decode'pos(D_RegOp )) = '1'))
         else s3_dat;  -- fast results
@@ -262,21 +261,27 @@ rv16pcx_0 : rv16pcx generic map(XLEN=>XLEN) -- calculate neXt PC (jmp/bra)
   s3_jmp <= s3_dec(t_decode'pos(D_Jal)) or s3_dec(t_decode'pos(D_JalR)) or s3_bra; -- jump or branch flag set
   s3_pcx <= s3_pcxx(PLEN-1 downto 0) when(s3_jmp) else s3_pc4; -- jump/branch  or continue pc+4 (PC neXt)
 
----------------------------------------------------------------------- Load / Store external memory
+---------------------------------------------------------------------- Load / Store local memory
 rv16dra_0 : rv16dra port map( i_ins => s3_ins, i_rs1 => s3_rg1, o_agu => s_dra );
-rv16dwa_0 : rv16dwa port map( i_ins => s3_ins, i_rs1 => s3_rg1, o_agu => s_dwa );
-  s_dwd <= s3_rg2;                -- write register rs2 to ext mem
-  s_dws <= s3_tid(3) and s3_dec(t_decode'pos(D_Store));
+rv16dwa_0 : rv16dwa port map( i_ins => s3_ins, i_rs1 => s3_rg1, i_rs2 => s3_rg2, 
+            o_dwa => s_dwa, o_dwd => s_dwd, o_dws => s_dws );
+  s_dwe <= s3_tid(3) and s3_dec(t_decode'pos(D_Store));  -- data write enable
+
+  -- build data write (two bit) lane from data write (byte) select
+  s_dwl(15 downto 12) <= "1111" when (s_dws(3) = '1') else "0000";
+  s_dwl(11 downto  8) <= "1111" when (s_dws(2) = '1') else "0000";
+  s_dwl( 7 downto  4) <= "1111" when (s_dws(1) = '1') else "0000";
+  s_dwl( 3 downto  0) <= "1111" when (s_dws(0) = '1') else "0000";
 
 ----------------------------------------------------------------------
 PF_SRAM_DAT_0 : PF_SRAM_DAT port map( 
-        W_EN     => s_dws,
+        W_EN     => s_dwe,
         W_CLK    => s_clk,
         R_CLK    => s_clk,
         W_DATA   => s_dwd,
         W_ADDR   => s_dwa(14 downto 2),
         R_ADDR   => s_dra(14 downto 2),
-        WBYTE_EN => x"FFFF",
+        WBYTE_EN => s_dwl,
         R_DATA   => s_drd );
 
 ----------------------------------------------------------------------

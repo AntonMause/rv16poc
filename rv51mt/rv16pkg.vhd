@@ -36,7 +36,10 @@ component rv16dwa is generic(XLEN : natural := 32);
 port (
   i_ins : in  std_logic_vector(31 downto 0);
   i_rs1 : in  std_logic_vector(XLEN-1 downto 0);
-  o_agu : out std_logic_vector(XLEN-1 downto 0) );
+  i_rs2 : in  std_logic_vector(XLEN-1 downto 0);
+  o_dwa : out std_logic_vector(XLEN-1 downto 0);
+  o_dwd : out std_logic_vector(XLEN-1 downto 0);
+  o_dws : out std_logic_vector(3 downto 0) );
 end component;
 
 component rv16bra is generic(XLEN : natural := 32);
