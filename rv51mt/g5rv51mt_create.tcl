@@ -14,6 +14,7 @@ save_project_as -location $PATH_PROJ -name $NAME_PROJ -replace_links 1 -files {a
 import_files \
     -convert_EDN_to_HDL 0 \
     -hdl_source {../../rv51mt/rv51mt.vhd} \
+    -hdl_source {../../rv51mt/rv51pkg.vhd} \
     -hdl_source {../../rv51mt/rv16alu.vhd} \
     -hdl_source {../../rv51mt/rv16bra.vhd} \
     -hdl_source {../../rv51mt/rv16dec.vhd} \
@@ -29,11 +30,12 @@ import_files \
 #import_files \
 #    -convert_EDN_to_HDL 0 \
 #    -library {} \
-#    -stimulus {../../rv51mt/rv16d_tb.vhd} 
+#    -stimulus {../../rv51mt/rv51mt_tb.vhd} 
 
-#import_files \
-#    -convert_EDN_to_HDL 0 \
-#    -sdc {../../rv51mt/g5rv51mt_tim.sdc} 
+import_files \
+    -convert_EDN_to_HDL 0 \
+    -sdc {../../rv51mt/g5rv51mt_tim.sdc} \
+    -sdc {../../rv51mt/g5rv51mt_chk.sdc} 
 
 file mkdir $PATH_PROJ/software
 file copy ../../rv51mt/rv16rom_head.vhd   $PATH_PROJ/software
@@ -48,15 +50,28 @@ cd $PATH_PROJ/software/
 source mkrv16rom.tcl
 cd $PATH_SOURCE
 
+file copy ../../rv51mt/PF_SRAM_DAT.tcl   $PATH_PROJ/smartgen
+file copy ../../rv51mt/PF_SRAM_INS.tcl   $PATH_PROJ/smartgen
+file copy ../../rv51mt/PF_URAM_PCU0.tcl   $PATH_PROJ/smartgen
+
+cd $PATH_PROJ/smartgen/
+source PF_SRAM_DAT.tcl
+source PF_SRAM_INS.tcl
+source PF_URAM_PCU0.tcl
+cd $PATH_SOURCE
+
 save_project 
 build_design_hierarchy 
 
 set_root -module {rv51mt::work} 
-organize_tool_files -tool {PLACEROUTE} -input_type {constraint} -module {rv51mt::work} \
-	-file $PATH_PROJ/constraint/io/brdBaseIo.pdc \
-	-file $PATH_PROJ/constraint/io/brdLedIo.pdc
 organize_tool_files -tool {SYNTHESIZE} -input_type {constraint} -module {rv51mt::work} \
-    -file $PATH_PROJ/constraint/brdBaseTim.sdc
+    -file $PATH_PROJ/constraint/g5rv51mt_tim.sdc
+organize_tool_files -tool {PLACEROUTE} -input_type {constraint} -module {rv51mt::work} \
+    -file $PATH_PROJ/constraint/g5rv51mt_tim.sdc
+#	-file $PATH_PROJ/constraint/io/brdBaseIo.pdc \
+#	-file $PATH_PROJ/constraint/io/brdLedIo.pdc 
+organize_tool_files -tool {VERIFYTIMING}  -input_type {constraint}  -module {rv51mt::work} \
+    -file $PATH_PROJ/constraint/g5rv51mt_chk.sdc
 build_design_hierarchy 
 check_sdc_constraints -tool {synthesis} 
 
