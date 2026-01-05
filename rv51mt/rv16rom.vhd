@@ -26,14 +26,14 @@ signal s_clk : std_logic;
 type duo_mem_array is array(0 to (2**(PLEN-1))-1) of std_logic_vector(15 downto 0);
 signal s_duo_mem : duo_mem_array := ( -- instruction memory 2x16 bit
 -- head -- head -- head -- head -- head -- head -- head -- head -- head --
-    x"0113", x"0020", -- 0x00200113
-    x"00ef", x"0080", -- 0x008000ef
-    x"8167", x"0000", -- 0x00008167
-    x"5ce3", x"fe11", -- 0xfe115ce3
-    x"f06f", x"ff9f", -- 0xff9ff06f
-    x"006f", x"0080", -- 0x0080006f
-    x"f06f", x"ff9f", -- 0xff9ff06f
-    x"006f", x"0080", -- 0x0080006f
+    x"0023", x"0020", -- 0x00200023
+    x"0113", x"0011", -- 0x00110113
+    x"f0ef", x"ff9f", -- 0xff9ff0ef
+    x"0013", x"0000", -- 0x00000013
+    x"0113", x"0011", -- 0x00110113
+    x"00a3", x"0020", -- 0x002000a3
+    x"f0ef", x"ff9f", -- 0xff9ff0ef
+    x"0013", x"0000", -- 0x00000013
     x"f06f", x"ff9f", -- 0xff9ff06f
     x"f06f", x"ffdf", -- 0xffdff06f
     x"0000", x"0000", -- 0x00000000

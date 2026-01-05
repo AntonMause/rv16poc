@@ -25,6 +25,7 @@ end component;
 component PF_SRAM_INS port(
         R_ADDR : in  std_logic_vector(12 downto 0);
         R_CLK  : in  std_logic;
+        R_EN   : in  std_logic;
         W_ADDR : in  std_logic_vector(12 downto 0);
         W_CLK  : in  std_logic;
         W_DATA : in  std_logic_vector(31 downto 0);

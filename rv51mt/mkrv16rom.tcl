@@ -13,7 +13,7 @@ puts $CC
 file delete rv16rom.o rv16rom.elf rv16rom.bin rv16rom.lst rv16rom.vhd
 exec $CC -march=rv32i -mabi=ilp32 -c -o rv16rom.o rv16rom.S
 exec $CC -march=rv32i -mabi=ilp32 -T microsemi-riscv-ram.ld -nostartfiles -o rv16rom.elf rv16rom.o
-# exec $OC -O ihex rv16rom.elf rv16rom.hex
+exec $OC -O ihex rv16rom.elf rv16rom.hex
 exec $OC -O binary rv16rom.elf rv16rom.bin
 # exec $OC -O verilog rv16rom.elf rv16rom.v
 exec $OD -D rv16rom.elf >rv16rom.lst

@@ -29,7 +29,7 @@ create_and_configure_core -core_vlnv {Actel:SgCore:PF_TPSRAM:1.1.108} -component
 "RCLOCK_PN:R_CLK"  \
 "RDEPTH:8192"  \
 "RE_PN:R_EN"  \
-"RE_POLARITY:2"  \
+"RE_POLARITY:1"  \
 "RESET_PN:R_DATA_ARST_N"  \
 "RESET_POLARITY:2"  \
 "RWIDTH:32"  \

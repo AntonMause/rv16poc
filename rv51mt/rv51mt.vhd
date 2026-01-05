@@ -46,16 +46,18 @@ signal s_clk, s_rst_n : std_logic;
 ----------------------------------------------------------------------
 -- t0: schedule next thread ID
 --signal s0_tbl : std_logic_vector(31 downto 0) := x"8121312F";
-  signal s0_tbl : std_logic_vector(31 downto 0) := x"09234967";  -- just one
+--  signal s0_tbl : std_logic_vector(31 downto 0) := x"09234967";  -- just one
+--  signal s0_tbl : std_logic_vector(31 downto 0) := x"09294969";  -- just one duo
+  signal s0_tbl : std_logic_vector(31 downto 0) := x"98989898";  -- just two duo
 --signal s0_tbl : std_logic_vector(31 downto 0) := x"09ACB9A7";  -- no duo
 --signal s0_tbl : std_logic_vector(31 downto 0) := x"09A9B9A7";  -- with duo
 signal n0_run : std_logic := '0';
-signal n1_mx2 : std_logic := '0'; -- mux if same ID found 2 stages appart
+signal s0_mx2, s1_mx2, s2_mx2 : std_logic := '0'; -- mux if same ID found 2 stages appart
 signal s_ifu_lsb : std_logic_vector(15 downto 0) := (OTHERS=>'0');
 
 -- ori type reg_mem_type is array (31 downto 0) of std_logic_vector (XLEN-1 downto 0);
 type reg_mem_type is array (0 to 127) of std_logic_vector (XLEN-1 downto 0);
-signal s_reg_mem : reg_mem_type := ( x"00000000",x"00000001",x"00000002",OTHERS=>x"00000A00" );
+signal s_reg_mem : reg_mem_type := ( x"00000000",x"00000001",x"00000002",OTHERS=>x"00000000" );
 --attribute syn_ramstyle of object : objectType is "string" ;
 attribute syn_ramstyle : string;
 attribute syn_ramstyle of s_reg_mem : signal is "uram";
@@ -63,7 +65,8 @@ attribute syn_ramstyle of s_reg_mem : signal is "uram";
 -- pcu programm counter unit memory and logic signals
 --type pcu_mem_type is array (0 to 15) of std_logic_vector (PLEN-1 downto 0);
 type pcu_mem_type is array (0 to  7) of std_logic_vector (PLEN-1 downto 0);
-signal s_pcu_mem : pcu_mem_type := ( x"0000", x"0110", x"0200", x"0300", x"0400", x"0500", x"0600", x"0700", others=>x"0F00" );
+--ori signal s_pcu_mem : pcu_mem_type := ( x"0000", x"0110", x"0200", x"0300", x"0400", x"0500", x"0600", x"0700", others=>x"0F00" );
+signal s_pcu_mem : pcu_mem_type := ( x"0000", x"0100", x"0000", x"0000", x"0000", x"0000", x"0000", x"0000", others=>x"0F00" );
 signal s_pcu_val_rd, s_pcu_val_wr : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
 signal s_pcu_idx_rd, s_pcu_idx_wr : std_logic_vector( 2 downto 0) := (OTHERS=>'0');
 signal s_pcu_sel_rd, s_pcu_sel_wr, s_pcu_run : std_logic := '0';
@@ -77,10 +80,11 @@ signal s2_rs1, s2_rs2, s2_rd, s3_rs1, s3_rs2, s3_rd     : std_logic_vector(4 dow
 signal s3_rg1, s3_rg2, s3_imm, s3_rx2, s3_alu           : std_logic_vector(XLEN-1 downto 0);
 
 ----------------------------------------------------------------------
-signal s1_tid, s2_tid, s3_tid, s4_tid, n1_tid : std_logic_vector(3 downto 0) := (OTHERS=>'0');
-signal s1_pc0i,s1_pc0, s2_pc0, s2_pc4, s3_pc0, s3_pc4, s3_pcx : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
-signal n0_pc0, n1_pc4, n2_pc0, n2_pc4, n3_pc4 : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
-signal s2_insi,s2_ins, s2_dec, s3_ins, s3_dec : std_logic_vector(31 downto 0) := (OTHERS=>'0');
+signal s0_tid, s1_tid, s2_tid, s3_tid, s4_tid : std_logic_vector(3 downto 0) := (OTHERS=>'0');
+signal s0_pc0i,s0_pc0,s0_pc0x, s1_pc0, s2_pc0, s2_pc4, s3_pc0, s3_pc4, s3_pcx : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
+signal s0_pc0o  : std_logic_vector(31 downto 0);
+signal s1_pc4, n2_pc0, n2_pc4, n3_pc4 : std_logic_vector(PLEN-1 downto 0) := (OTHERS=>'0');
+signal s2_insi,s2_inso,s2_ins, s2_dec, s3_ins, s3_dec : std_logic_vector(31 downto 0) := (OTHERS=>'0');
 signal s2_dex : t_decode;
 signal n2_dat,  s2_dat : std_logic_vector(31 downto 0);
 
@@ -95,6 +99,7 @@ signal s_pwd, s_prd, s_drd, s_dwd, s_rwd, s_rrd1, s_rrd2 : std_logic_vector(31 d
 signal s_pws, s_prs, s_drs, s_dwe : std_logic := '0';                               -- select
 signal s_dws : std_logic_vector( 3 downto 0); -- data write byte select
 signal s_dwl : std_logic_vector(15 downto 0); -- data write lane select
+signal s_gpo7, s_gpo6, s_gpo5, s_gpo4, s_gpo3, s_gpo2, s_gpo1, s_gpo0 : std_logic := '0';
 
 begin
 
@@ -108,74 +113,83 @@ begin
 sch_tbl_p : process (s_clk)
   begin
     if rising_edge(s_clk) then
-      s0_tbl <=  s0_tbl(s0_tbl'length-5 downto 0) & s0_tbl(s0_tbl'length-1 downto s0_tbl'length-4);
-    end if;
-  end process;
-  n1_tid     <= s0_tbl(3 downto 0);
-  o_sch      <= n1_tid;
-  o_tid      <= s1_tid;
-
-----------------------------------------------------------------------
--- t1: read PC for scheduled thread TID from inferred table (and write back in t?)
-pcu_mem_p : process (s_clk)
-  begin
-    if rising_edge(s_clk) then
-      if (s2_tid(3) = '1') then -- '0' = skip updating this thread
-        s_pcu_mem(to_integer (unsigned(s2_tid(2 downto 0)))) <= s3_pcx;
+      if(s_rst_n='1') then
+        s0_tbl <=  s0_tbl(s0_tbl'length-5 downto 0) & s0_tbl(s0_tbl'length-1 downto s0_tbl'length-4);
       end if;
     end if;
   end process;
-  s1_pc0i <= s_pcu_mem(to_integer (unsigned(n1_tid(2 downto 0)))); -- read from inferrence
+  s0_tid     <= s_gpo6 & s0_tbl(s0_tbl'length-2 downto s0_tbl'length-4) when(s0_tbl(s0_tbl'length-4)='0')
+     else                s0_tbl(s0_tbl'length-1 downto s0_tbl'length-4);
+--  s0_tid     <= s0_tbl(s0_tbl'length-1 downto s0_tbl'length-4);
+  o_sch      <= s0_tid;
+  o_tid      <= s1_tid;
+
 ----------------------------------------------------------------------
--- array of programm pointer
-  s_pcu_adr_rd0 <=    "00" & n1_tid(2 downto 0);
-  s_pcu_adr_wr0 <=    "00" & s2_tid(2 downto 0);
+-- t0 (upd@t3): read PC for scheduled thread TID from inferred table (and write back in t?)
+pcu_mem_p : process (s_clk)
+  begin
+    if rising_edge(s_clk) then
+      if (s3_tid(3) = '1') then -- '0' = skip updating this thread
+        s_pcu_mem(to_integer (unsigned(s3_tid(2 downto 0)))) <= s3_pcx;
+      end if;
+    end if;
+  end process;
+  s0_pc0i <= s_pcu_mem(to_integer (unsigned(s0_tid(2 downto 0)))); -- read async from inferrence
+----------------------------------------------------------------------
+-- t0 (upd@t3): array of programm pointer
+  s_pcu_adr_rd0 <=    "00" & s0_tid(2 downto 0);
+  s_pcu_adr_wr0 <=    "00" & s3_tid(2 downto 0);
   s_pcu_val_wr0 <= x"0000" & s3_pcx;
 PF_URAM_PCU_0 : PF_URAM_PCU0 port map( 
         W_DATA => s_pcu_val_wr0,
         R_ADDR => s_pcu_adr_rd0,
         W_ADDR => s_pcu_adr_wr0,
-        W_EN   => s2_tid(3),
+        W_EN   => s3_tid(3),
       --R_CLK  => s_clk, -- reading asynchron
         W_CLK  => s_clk,
-        R_DATA => s_pcu_val_rd0  );
---s1_pc0 <= s_pcu_val_rd0(PLEN-1 downto 0); -- use instantiation
-  s1_pc0 <= s1_pc0i;                        -- use inference data
-  n1_mx2     <=   n1_tid(3) when (n1_tid = s2_tid) else '0';  -- use tid(3) to indicate activity
+        R_DATA => s0_pc0o  );
+--s0_pc0     <= s0_pc0i;                     -- use inference data
+  s0_pc0     <= s0_pc0o(PLEN-1 downto 0);    -- use instantiation data
+  s0_mx2     <=   s0_tid(3) when (s0_tid = s2_tid) else '0';  -- use tid(3) to indicate activity
+-- select PC to use for next instruction fetch from table or from short cut
+  s0_pc0x    <=   s0_pc0 when (s0_mx2 = '0') else s2_pc4; -- read from memory or inc4
 
 ----------------------------------------------------------------------
--- t2: select PC to use for next instruction fetch from table or from short cut
-  n2_pc0     <=   s1_pc0 and x"00FF" when (n1_mx2 = '0') else s2_pc4; -- read from memory or inc4
-  o_pc0      <=   n2_pc0;
-  n2_pc4     <=   std_logic_vector(unsigned(s1_pc0) +4);
-  o_pc4      <=   n2_pc4;
+  o_pc0      <=   s1_pc0;
+  s1_pc4     <=   std_logic_vector(unsigned(s1_pc0) +4);
+  o_pc4      <=   s1_pc4;
   o_vld      <=   s4_tid(3) & s3_tid(3) & s2_tid(3) & s1_tid(3);
   
 ----------------------------------------------------------------------
--- t2: instruction SRAM to fetch from
+-- t1: select instruction SRAM to fetch from
+-- t2: data from instruction SRAM
 rv16rom0 : rv16rom
   generic map( PLEN => RLEN )
   port map ( i_clk => s_clk,
-             i_adr => std_logic_vector(n2_pc0(RLEN-1 downto 0)),
-             o_dat => s2_insi );
+             i_adr => std_logic_vector(s1_pc0(RLEN-1 downto 0)),
+             o_dat => s2_insi ); -- for inference
 ------------------------------------------------------------------------
 PF_SRAM_INS_0 : PF_SRAM_INS port map( 
         W_DATA => (others=>'0'),
         W_ADDR => (others=>'1'),
-        R_ADDR => n2_pc0(14 downto 2),
+        R_ADDR => s1_pc0(14 downto 2),
+        R_EN   => s_rst_n,
         W_EN   => '0',
         W_CLK  => s_clk,
         R_CLK  => s_clk,
---        R_DATA => open);    -- use inference
-        R_DATA => s2_ins);    -- use   instance
+        R_DATA => s2_inso);    -- for instance
 --s2_ins    <= s2_insi;       -- use inference
+s2_ins    <= s2_inso;       -- use instance
 s_ifu_lsb <= s2_ins(15 downto 0);
 ----------------------------------------------------------------------
 ctl_p : process(s_clk,s_rst_n)
   begin
     if (s_rst_n = '0') then
       s1_tid       <=  (OTHERS=>'0');
+      s1_mx2       <= '0';
+      s1_pc0       <=  (OTHERS=>'0');
       s2_tid       <=  (OTHERS=>'0');
+      s2_mx2       <= '0';
       s2_pc0       <=  (OTHERS=>'0');
       s2_pc4       <=  (OTHERS=>'0');
       s3_pc0       <=  (OTHERS=>'0');
@@ -186,10 +200,17 @@ ctl_p : process(s_clk,s_rst_n)
       s3_rdw       <=  '0';
       s3_one       <=  (OTHERS=>'0');
     elsif rising_edge(s_clk) then  -- t0 schedule
-      s1_tid       <=  n1_tid;     -- t1 get pc
-      s2_tid       <=  s1_tid;     -- t2 fetch ins
+      s1_tid       <=  s0_tid;     -- t1 get pc
+      s1_mx2       <=  s0_mx2;
+      s1_pc0       <=  s0_pc0x;
+      if(s3_jmp and s1_mx2) then
+        s2_tid       <=  s1_tid and "0111";    -- t2 fetch ins
+      else
+        s2_tid       <=  s1_tid;     -- t2 fetch ins
+      end if;
+      s2_mx2       <=  s1_mx2;
       s2_pc0       <=  s1_pc0;
-      s2_pc4       <=  n2_pc4;
+      s2_pc4       <=  s1_pc4;
       s2_dat       <=  n2_dat;
       s3_tid       <=  s2_tid;     -- t3 decode rs
       s3_pc0       <=  s2_pc0;
@@ -215,7 +236,7 @@ rv16one_0 : rv16one port map( i_ins => s2_ins, i_pc0 => s2_pc0x, o_alu => s2_one
   s2_no0  <= '0' when(s2_rd = "00000") else '1'; -- destination register is not x0/zero
   s2_rs1  <= s2_ins(19 downto 15); -- register source one
   s2_rs2  <= s2_ins(24 downto 20); -- register source two
-  s2_rdw  <= s1_tid(3) and s2_no0 and s2_dec(t_decode'pos(D_Upd)); -- merged bits on decoder  << todo: adjust s1_ <> s2_
+  s2_rdw  <= s2_tid(3) and s2_no0 and s2_dec(t_decode'pos(D_Upd)); -- merged bits on decoder  << todo: adjust s1_ <> s2_
 
 ----------------------------------------------------------------------
 -- t3: (final) decode and get register
@@ -225,14 +246,19 @@ rv16one_0 : rv16one port map( i_ins => s2_ins, i_pc0 => s2_pc0x, o_alu => s2_one
         else s3_alu when ((s3_dec(t_decode'pos(D_ImmOp )) = '1') or (s3_dec(t_decode'pos(D_RegOp )) = '1'))
         else s3_dat;  -- fast results
 
-----------------------------------------------------------------------
-    s_rra1(4 downto 0) <= s2_rs1; -- rra = register read  address
-    s_rra2(4 downto 0) <= s2_rs2; -- rwd = register write data
+----------------------------------------------------------------------  todo: check if tid(0) && (rd>16)
+--    s_rra1(6 downto 0) <= s2_tid(1 downto 0) & s2_rs1; -- rra = register read  address
+--    s_rra2(6 downto 0) <= s2_tid(1 downto 0) & s2_rs2; -- rwd = register write data
+--    s_rwa(6 downto 0)  <= s3_tid(1 downto 0) & s3_rd;
+    s_rra1(6 downto 0) <= (s2_tid(2 downto 0) & "0000") or ("00" & s2_rs1); -- rra = register read  address
+    s_rra2(6 downto 0) <= (s2_tid(2 downto 0) & "0000") or ("00" & s2_rs2); -- rwd = register write data
+    s_rwa(6 downto 0)  <= (s3_tid(2 downto 0) & "0000") or ("00" & s3_rd);
 reg_mem_p : process (s_clk)
   begin
     if rising_edge(s_clk) then
       if (s3_rdw = '1') then -- write to destination register
-        s_reg_mem(to_integer (unsigned(s3_rd))) <= s_rwd(XLEN-1 downto 0);
+--        s_reg_mem(to_integer (unsigned(s3_rd))) <= s_rwd(XLEN-1 downto 0);
+        s_reg_mem(to_integer (unsigned(s_rwa))) <= s_rwd(XLEN-1 downto 0);
       end if;
 --    s_rra1(4 downto 0) <= s2_rs1;
 --    s_rra2(4 downto 0) <= s2_rs2;
@@ -285,6 +311,36 @@ PF_SRAM_DAT_0 : PF_SRAM_DAT port map(
         R_DATA   => s_drd );
 
 ----------------------------------------------------------------------
+gpo_p : process (s_clk)
+  begin
+    if rising_edge(s_clk) then
+      if(s_dwe='1') then
+        if(s_dws(1) = '1') then
+          s_gpo7 <= s_dwd(3);
+          s_gpo6 <= s_dwd(2);
+          s_gpo5 <= s_dwd(1);
+          s_gpo4 <= s_dwd(0);
+        end if;
+        if(s_dws(0) = '1') then
+          s_gpo3 <= s_dwd(3);
+          s_gpo2 <= s_dwd(2);
+          s_gpo1 <= s_dwd(1);
+          s_gpo0 <= s_dwd(0);
+        end if;
+      end if;
+    end if;
+  end process;
+--  s_gpo7 <= s3_tid(3);
+--  s_gpo6 <= s3_dec(t_decode'pos(D_Store));
+--  s_gpo5 <= s_dws(0);
+--  s_gpo4 <= s_dwe;
+  
+--  s_gpo6 <= s3_dec(t_decode'pos(D_ImmOp)); -- s3_alu
+--  s_gpo5 <= s3_alu(0);
+--  s_gpo4 <= s3_jmp;
+  
+  o_gpo  <= s_gpo7 & s_gpo6 & s_gpo5 & s_gpo4 & s_gpo3 & s_gpo2 & s_gpo1 & s_gpo0;
+
 
 end RTL;
 
